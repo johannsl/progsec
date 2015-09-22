@@ -53,7 +53,7 @@ class PostController extends Controller
     {
 
         if(!$this->auth->guest()) {
-
+            //we save comment without checking
             $comment = new Comment();
             $comment->setAuthor($_SESSION['user']);
             $comment->setText($this->app->request->post("text"));
@@ -94,7 +94,7 @@ class PostController extends Controller
             $content = $request->post('content');
             $author = $request->post('author');
             $date = date("dmY");
-
+            //we don't check these values on right way for $title,$content etc.
             $validation = new PostValidation($title, $author, $content);
             if ($validation->isGoodToGo()) {
                 $post = new Post();
