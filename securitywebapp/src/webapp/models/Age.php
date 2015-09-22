@@ -7,6 +7,7 @@ class Age
 
     private $age;
     
+	// is throwing this exception OK? Only DB exceptions are bad, right?
     public function __construct($age)
     {
         if (! $this->isHuman($age)) {
@@ -21,6 +22,7 @@ class Age
         return $this->age;
     }
     
+	// seams OK
     private function isHuman($age)
     {
         return is_numeric($age) and $age >= 0 and $age <= 130;
