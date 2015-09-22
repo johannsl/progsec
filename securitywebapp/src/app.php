@@ -16,7 +16,7 @@ chmod(__DIR__ . '/../web/uploads', 0700);
 
 $app = new Slim([
     'templates.path' => __DIR__.'/webapp/templates/',
-    'debug' => true,
+    'debug' => true,  //OTG-IDENT-005
     'view' => new Twig()
 
 ]);
@@ -32,7 +32,7 @@ try {
     // Set errormode to exceptions
     $app->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    echo $e->getMessage();
+    echo $e->getMessage(); //injection
     exit();
 }
 
@@ -40,10 +40,12 @@ try {
 
 date_default_timezone_set("Europe/Oslo");
 
+
 $app->hash = new Hash();
 $app->userRepository = new UserRepository($app->db);
 $app->postRepository = new PostRepository($app->db);
 $app->commentRepository = new CommentRepository($app->db);
+//OTG-AUTHZ-002
 $app->auth = new Auth($app->userRepository, $app->hash);
 
 $ns ='tdt4237\\webapp\\controllers\\';
@@ -71,12 +73,15 @@ $app->post('/forgot/:username', $ns . 'ForgotPasswordController:confirm');
 $app->post('/forgot', $ns . 'ForgotPasswordController:submitName');
 
 // Show a user by name
+// OTG-AUTHZ-002
 $app->get('/user/:username', $ns . 'UserController:show')->name('showuser');
 
 // Show all users
+// OTG-AUTHZ-002
 $app->get('/users', $ns . 'UserController:all');
 
 // Posts
+// OTG-AUTHZ-002
 $app->get('/posts/new', $ns . 'PostController:showNewPostForm')->name('createpost');
 $app->post('/posts/new', $ns . 'PostController:create');
 
@@ -89,6 +94,7 @@ $app->post('/posts/:postid', $ns . 'PostController:addComment');
 $app->get('/logout', $ns . 'UserController:logout')->name('logout');
 
 // Admin restricted area
+//OTG-AUTHZ-002 and hardcoded
 $app->get('/admin', $ns . 'AdminController:index')->name('admin');
 $app->get('/admin/delete/post/:postid', $ns . 'AdminController:deletepost');
 $app->get('/admin/delete/:username', $ns . 'AdminController:delete');

@@ -12,7 +12,7 @@ class UserRepository
 {
     const INSERT_QUERY   = "INSERT INTO users(user, pass, email, age, bio, isadmin, fullname, address, postcode) VALUES('%s', '%s', '%s' , '%s' , '%s', '%s', '%s', '%s', '%s')";
     const UPDATE_QUERY   = "UPDATE users SET email='%s', age='%s', bio='%s', isadmin='%s', fullname ='%s', address = '%s', postcode = '%s' WHERE id='%s'";
-    const FIND_BY_NAME   = "SELECT * FROM users WHERE user='%s'";
+    const FIND_BY_NAME   = "SELECT * FROM users WHERE user='%s'";		
     const DELETE_BY_NAME = "DELETE FROM users WHERE user='%s'";
     const SELECT_ALL     = "SELECT * FROM users";
     const FIND_FULL_NAME   = "SELECT * FROM users WHERE user='%s'";
@@ -33,7 +33,7 @@ class UserRepository
         $user->setUserId($row['id']);
         $user->setFullname($row['fullname']);
         $user->setAddress(($row['address']));
-        $user->setPostcode((($row['postcode'])));
+        $user->setPostcode((($row['postcode']))); 
         $user->setBio($row['bio']);
         $user->setIsAdmin($row['isadmin']);
 
@@ -49,10 +49,10 @@ class UserRepository
     }
 
     public function getNameByUsername($username)
-    {
-        $query = sprintf(self::FIND_FULL_NAME, $username);
-
-        $result = $this->pdo->query($query, PDO::FETCH_ASSOC);
+    {						
+        $query = sprintf(self::FIND_FULL_NAME, $username);			#username should be filtered
+		
+        $result = $this->pdo->query($query, PDO::FETCH_ASSOC);	
         $row = $result->fetch();
         return $row['fullname'];
 
@@ -60,8 +60,8 @@ class UserRepository
 
     public function findByUser($username)
     {
-        $query  = sprintf(self::FIND_BY_NAME, $username);
-        $result = $this->pdo->query($query, PDO::FETCH_ASSOC);
+        $query  = sprintf(self::FIND_BY_NAME, $username);			#username should be filtered
+        $result = $this->pdo->query($query, PDO::FETCH_ASSOC);		
         $row = $result->fetch();
         
         if ($row === false) {
@@ -75,7 +75,7 @@ class UserRepository
     public function deleteByUsername($username)
     {
         return $this->pdo->exec(
-            sprintf(self::DELETE_BY_NAME, $username)
+            sprintf(self::DELETE_BY_NAME, $username)				#username should be filtered
         );
     }
 
@@ -106,7 +106,7 @@ class UserRepository
     {
         $query = sprintf(
             self::INSERT_QUERY, $user->getUsername(), $user->getHash(), $user->getEmail(), $user->getAge(), $user->getBio(), $user->isAdmin(), $user->getFullname(), $user->getAddress(), $user->getPostcode()
-        );
+        );		#these values should also be sanitized
 
         return $this->pdo->exec($query);
     }
@@ -115,7 +115,7 @@ class UserRepository
     {
         $query = sprintf(
             self::UPDATE_QUERY, $user->getEmail(), $user->getAge(), $user->getBio(), $user->isAdmin(), $user->getFullname(), $user->getAddress(), $user->getPostcode(), $user->getUserId()
-        );
+        );		#these values should also be sanitized
 
         return $this->pdo->exec($query);
     }

@@ -23,7 +23,7 @@ class ForgotPasswordController extends Controller {
     function submitName() {
         $username = $this->app->request->post('username');
         if($username != "") {
-            $this->app->redirect('/forgot/' . $username);
+            $this->app->redirect('/forgot/' . $username); //Possible VULN: username variable should be checked to contain no slashes before redirecting (new id)
         }
         else {
             $this->render('forgotPassword.twig');
