@@ -75,9 +75,8 @@ class Auth
      */
     public function isAdmin()
     {
-        // Again with the terrible cookie use.
         if ($this->check()) {
-            return $_COOKIE['isadmin'] === 'yes';
+            return $_COOKIE['isadmin'] === 'yes'; // Again with the terrible cookie use. G21_0002
         }
 
         throw new Exception('Not logged in but called Auth::isAdmin() anyway');
@@ -85,9 +84,8 @@ class Auth
 
     public function logout()
     {
-        // This is not a safe logout
         if($this->guest()) {
-            session_destroy();
+            session_destroy(); // This is not a safe logout. G21_0003
         }
     }
 
