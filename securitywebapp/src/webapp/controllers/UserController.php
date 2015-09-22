@@ -63,8 +63,8 @@ class UserController extends Controller
 
     public function logout()
     {
-        $this->auth->logout();
-        $this->app->redirect('http://google.com');
+        $this->auth->logout(); 
+        $this->app->redirect('http://google.com'); // Redirect should go to home page no Google
     }
 
     public function show($username)
