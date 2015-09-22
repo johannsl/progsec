@@ -26,12 +26,14 @@ class LoginController extends Controller
 
     public function login()
     {
+        // username and passoword should probably not be POSTed.
         $request = $this->app->request;
         $user    = $request->post('user');
         $pass    = $request->post('pass');
 
         if ($this->auth->checkCredentials($user, $pass)) {
             $_SESSION['user'] = $user;
+            // These cookies are terrible
             setcookie("user", $user);
             setcookie("password",  $pass);
             $isAdmin = $this->auth->user()->isAdmin();

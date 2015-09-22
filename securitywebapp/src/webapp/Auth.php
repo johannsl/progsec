@@ -75,6 +75,7 @@ class Auth
      */
     public function isAdmin()
     {
+        // Again with the terrible cookie use.
         if ($this->check()) {
             return $_COOKIE['isadmin'] === 'yes';
         }
@@ -84,6 +85,7 @@ class Auth
 
     public function logout()
     {
+        // This is not a safe logout
         if($this->guest()) {
             session_destroy();
         }

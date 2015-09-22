@@ -6,10 +6,12 @@
 
 {{ flash.error}} <br />
 {{ flash.success|raw }}
+// Is this safe with POST?
 <form action="" method="POST">
 
 <label>Username: </label>
 <input type="text" name="user"> <br />
+// Passwords should not have text type.
 <label>Password: </label>
 <input type="text" name="pass"> <br />
 <input type="submit" name="submit" value="Log in">
