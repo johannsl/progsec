@@ -46,8 +46,7 @@ class AdminController extends Controller
         $this->app->redirect('/admin');
     }
 
-	// there should be check if $this->auth->isAdmin() before deleting
-	// why is this not in the report? It was before...?
+	// there should be check if $this->auth->isAdmin() before deleting (G21_0009)
     public function deletePost($postId)
     {
         if ($this->postRepository->deleteByPostid($postId) === 1) {

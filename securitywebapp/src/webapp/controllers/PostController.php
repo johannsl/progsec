@@ -26,6 +26,7 @@ class PostController extends Controller
 
     public function show($postId)
     {
+		//Check if user is logged in missing (G21_0011)
         $post = $this->postRepository->find($postId);
         $comments = $this->commentRepository->findByPostId($postId);
         $request = $this->app->request;
@@ -60,7 +61,7 @@ class PostController extends Controller
             $comment->setDate(date("dmY"));
             $comment->setPost($postId);
             $this->commentRepository->save($comment);
-            $this->app->redirect('/posts/' . $postId);
+            $this->app->redirect('/posts/' . $postId); //Possible VULN: Postid should be filtered for a / before redirecting
         }
         else {
             $this->app->redirect('/login');

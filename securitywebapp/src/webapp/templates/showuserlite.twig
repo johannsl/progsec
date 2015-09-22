@@ -21,15 +21,15 @@
             <tr></tr>
             <th>Age:</th>
             <td>{{ user.age|raw }}</td>  {#  The variable shouldn't be escaped  #}
-            <tr></tr>
-        <!-- PS: RMB4P!!! {{ user.hash|raw }} --></td>
+       }     <tr></tr>
+        <!-- PS: RMB4P!!! {{ user.hash|raw }} --></td> {# User hash shouldn be in page comments (G21_0005) #}
 
 
 
 
     </table>
 {% else %}
-    Could not find a user with username "{{ username|raw }}".
+    Could not find a user with username "{{ username|raw }}".  
 {% endif %}
 
 {% endblock %}
