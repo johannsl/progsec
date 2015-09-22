@@ -12,6 +12,7 @@ class AdminController extends Controller
         parent::__construct();
     }
 
+	//this seams OK
     public function index()
     {
         if ($this->auth->guest()) {
@@ -31,6 +32,8 @@ class AdminController extends Controller
         $this->render('admin.twig', $variables);
     }
 
+	// there should be check if $this->auth->isAdmin() before deleting
+	// G21_0009
     public function delete($username)
     {
         if ($this->userRepository->deleteByUsername($username) === 1) {
@@ -43,6 +46,8 @@ class AdminController extends Controller
         $this->app->redirect('/admin');
     }
 
+	// there should be check if $this->auth->isAdmin() before deleting
+	// why is this not in the report? It was before...?
     public function deletePost($postId)
     {
         if ($this->postRepository->deleteByPostid($postId) === 1) {

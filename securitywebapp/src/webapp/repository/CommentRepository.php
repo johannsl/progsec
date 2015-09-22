@@ -7,12 +7,13 @@ use tdt4237\webapp\models\Comment;
 
 class CommentRepository
 {
-
+	
     /**
      * @var PDO
      */
     private $db;
 
+	//id input should be parametrized
     const SELECT_BY_ID = "SELECT * FROM moviereviews WHERE id = %s";
 
     public function __construct(PDO $db)
@@ -29,8 +30,10 @@ class CommentRepository
         $date = (string) $comment->getDate();
         $postid = $comment->getPost();
 
-
-
+		
+		// what if it is !== null?
+		// all of this inputs should be checked before using them! (to avoid possible SQL injections or XSS)
+		// G21_0008, G21_0004, G21_0018
         if ($comment->getCommentId() === null) {
             $query = "INSERT INTO comments (author, text, date, belongs_to_post) "
                 . "VALUES ('$author', '$text', '$date', '$postid')";
