@@ -55,8 +55,7 @@ class UserRepository
                //YAY THE STRING IS ALPHANUMERIC!
         //}
 
-        $query = sprintf(self::FIND_FULL_NAME, $username);			#username should be filtered
-		
+        $query = sprintf(self::FIND_FULL_NAME, $username);			#username should be filtered	
         $result = $this->pdo->query($query, PDO::FETCH_ASSOC);	
         $row = $result->fetch();
         return $row['fullname'];

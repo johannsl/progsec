@@ -29,8 +29,9 @@ class CommentRepository
         $text    = $comment->getText();
         $date = (string) $comment->getDate();
         $postid = $comment->getPost();
-		// SQL injection (G21_0018)
 
+		// SQL injection (G21_0018)
+        // I believe this is fixed
         if ($comment->getCommentId() === null) {
             $query = "INSERT INTO comments (author, text, date, belongs_to_post) VALUES (:author, :text, :date, :postid)";
             $stmt = $this->db->prepare($query);
