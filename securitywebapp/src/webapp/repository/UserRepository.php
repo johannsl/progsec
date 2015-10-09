@@ -49,7 +49,12 @@ class UserRepository
     }
 
     public function getNameByUsername($username)
-    {						
+    {
+
+        //if (ctype_alnum($user)) {
+               //YAY THE STRING IS ALPHANUMERIC!
+        //}
+
         $query = sprintf(self::FIND_FULL_NAME, $username);			#username should be filtered
 		
         $result = $this->pdo->query($query, PDO::FETCH_ASSOC);	
