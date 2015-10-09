@@ -16,10 +16,15 @@ chmod(__DIR__ . '/../web/uploads', 0700);
 
 $app = new Slim([
     'templates.path' => __DIR__.'/webapp/templates/',
-    'debug' => true,  //OTG-IDENT-005
+    'debug' => false,  //OTG-IDENT-005
     'view' => new Twig()
 
 ]);
+$app->error(function (\Exception $e) use ($app) {
+    //$app->render('error.php');
+	echo "Sorry, something went wrong...";
+});
+
 
 $view = $app->view();
 $view->parserExtensions = array(
