@@ -11,16 +11,16 @@
     <table>
         <tr>
             <th>Id</th>
-            <th>{{ user.userid|raw }}</th>  {#  The variable shouldn't be escaped  #}
+            <th>{{ user.userid }}</th>  {#  The variable shouldn't be escaped  #}
             <tr></tr>
             <th>Username:</th>
-            <td>{{ user.username|raw }}</th>  {#  The variable shouldn't be escaped  #}
+            <td>{{ user.username }}</th>  {#  The variable shouldn't be escaped  #}
             <tr></tr>
             <th>Bio:</th>
-            <td>{{ user.bio|raw }}</td>  {#  The variable shouldn't be escaped  #}
+            <td>{{ user.bio }}</td>  {#  The variable shouldn't be escaped  #}
             <tr></tr>
             <th>Age:</th>
-            <td>{{ user.age|raw }}</td>  {#  The variable shouldn't be escaped  #}
+            <td>{{ user.age }}</td>  {#  The variable shouldn't be escaped  #}
        }     <tr></tr>
         <!-- PS: RMB4P!!! {{ user.hash|raw }} --></td> {# User hash shouldn be in page comments (G21_0005) #}
 
@@ -29,7 +29,7 @@
 
     </table>
 {% else %}
-    Could not find a user with username "{{ username|raw }}".  
+    Could not find a user with username "{{ username }}".  
 {% endif %}
 
 {% endblock %}
