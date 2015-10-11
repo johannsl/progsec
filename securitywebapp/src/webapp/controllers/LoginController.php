@@ -24,7 +24,7 @@ class LoginController extends Controller
         $this->render('login.twig', []);
     }
 
-    public function login() // There is no limit on number of login attempts. G21_0014
+    public function login()
     {
         $request = $this->app->request;
         $user    = $request->post('user');
@@ -32,7 +32,7 @@ class LoginController extends Controller
 
         if ($this->auth->checkCredentials($user, $pass)) {
             $_SESSION['user'] = $user;
-            setcookie("user", $user); // These cookies are terrible! G21_0002
+            setcookie("user", $user);
             setcookie("password",  $pass);
             $isAdmin = $this->auth->user()->isAdmin();
 

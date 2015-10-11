@@ -12,8 +12,8 @@
         </tr>
         {% for user in users %}
             <tr>
-                <td>{{ user.userid|raw }}</td> {#  The variable shouldn't be escaped  #}
-                <td><a href="/user/{{ user.username|raw }}">{{ user.username|raw }}</a></td> {#  The variable shouldn't be escaped  #}
+                <td>{{ user.userid|raw }}</td>
+                <td><a href="/user/{{ user.username|raw }}">{{ user.username|raw }}</a></td>
             </tr>
         {% endfor %}
         </table>

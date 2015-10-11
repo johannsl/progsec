@@ -19,7 +19,7 @@ class PostRepository
         $this->db = $db;
     }
     
-    public static function create($id, $author, $title, $content, $date) //Bad-Practice: Should be private static
+    public static function create($id, $author, $title, $content, $date)
     {
         $post = new Post;
         
@@ -34,7 +34,7 @@ class PostRepository
     public function find($postId)
     {
         $sql  = "SELECT * FROM posts WHERE postId = $postId";
-        $result = $this->db->query($sql); //VULN: SQL-Injection via postId variable (G21_0018)
+        $result = $this->db->query($sql);
         $row = $result->fetch();
 
         if($row === false) {
@@ -81,7 +81,7 @@ class PostRepository
     public function deleteByPostid($postId)
     {
         return $this->db->exec(
-            sprintf("DELETE FROM posts WHERE postid='%s';", $postId)); //VULN: SQL-Injection via postId variable (new Vulnerability)
+            sprintf("DELETE FROM posts WHERE postid='%s';", $postId));
     }
 
 
@@ -97,7 +97,7 @@ class PostRepository
                 . "VALUES ('$title', '$author', '$content', '$date')";
         }
 
-        $this->db->exec($query);  //VULN: SQL-Injection via postId variable (G21_0018)
-        return $this->db->lastInsertId(); //Bad-Practice: No erro check if insertion worked
+        $this->db->exec($query);
+        return $this->db->lastInsertId();
     }
 }
