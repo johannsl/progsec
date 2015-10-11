@@ -50,30 +50,35 @@ class UserRepository
 
     public function getNameByUsername($username)
     {
+        // username should be filtered	
+        // I believe this is fixed
+        if (ctype_alnum($username)) {
+            $query = sprintf(self::FIND_FULL_NAME, $username);
+            $result = $this->pdo->query($query, PDO::FETCH_ASSOC);	
+            $row = $result->fetch();
+            return $row['fullname'];
+        }
 
-        //if (ctype_alnum($user)) {
-               //YAY THE STRING IS ALPHANUMERIC!
-        //}
-
-        $query = sprintf(self::FIND_FULL_NAME, $username);			#username should be filtered	
-        $result = $this->pdo->query($query, PDO::FETCH_ASSOC);	
-        $row = $result->fetch();
-        return $row['fullname'];
-
+        return false;
     }
 
     public function findByUser($username)
     {
-        $query  = sprintf(self::FIND_BY_NAME, $username);			#username should be filtered
-        $result = $this->pdo->query($query, PDO::FETCH_ASSOC);		
-        $row = $result->fetch();
+        // username should be filtered
+        // I believe this is fixed
+        if (ctype_alnum($username)) {
+            $query  = sprintf(self::FIND_BY_NAME, $username);
+            $result = $this->pdo->query($query, PDO::FETCH_ASSOC);		
+            $row = $result->fetch();
         
-        if ($row === false) {
-            return false;
+            if ($row === false) {
+                return false;
+            }
+
+            return $this->makeUserFromRow($row);
         }
 
-
-        return $this->makeUserFromRow($row);
+        return false;
     }
 
     public function deleteByUsername($username)

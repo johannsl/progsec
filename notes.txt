@@ -1,0 +1,7 @@
+Project commands:
+Delete all tables with php composer.phar run-script down
+Create SQL tables and fill data with php composer.phar up
+php -S localhost:8080 -t web web/index.php
+
+SQL injection - comments field example:
+', 1, 1); INSERT INTO "users" VALUES(5,'test2','080ca970b64a1cf1b438d1c06839830a5df52961',NULL,'admin','homebase','9090',NULL,NULL,1); INSERT INTO comments (author, text, date, belongs_to_post) VALUES ('pene', 

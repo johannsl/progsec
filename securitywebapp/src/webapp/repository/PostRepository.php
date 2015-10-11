@@ -33,8 +33,12 @@ class PostRepository
 
     public function find($postId)
     {
-        $sql  = "SELECT * FROM posts WHERE postId = $postId";
-        $result = $this->db->query($sql); //VULN: SQL-Injection via postId variable (G21_0018)
+        //VULN: SQL-Injection via postId variable (G21_0018)
+        // I believe this is fixed
+        $sql  = "SELECT * FROM posts WHERE postId = :postId";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':postId', $postId);
+        $result = $stmt->execute();
         $row = $result->fetch();
 
         if($row === false) {
@@ -80,8 +84,12 @@ class PostRepository
 
     public function deleteByPostid($postId)
     {
-        return $this->db->exec(
-            sprintf("DELETE FROM posts WHERE postid='%s';", $postId)); //VULN: SQL-Injection via postId variable (new Vulnerability)
+        //VULN: SQL-Injection via postId variable (new Vulnerability)
+        // I believe this is fixed
+        $sql = "DELETE FROM posts WHERE postid = :postId";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':postId', postId);
+        return $stmt->execute();
     }
 
 
@@ -94,10 +102,18 @@ class PostRepository
 
         if ($post->getPostId() === null) {
             $query = "INSERT INTO posts (title, author, content, date) "
-                . "VALUES ('$title', '$author', '$content', '$date')";
+                . "VALUES (':title', ':author', ':content', ':date')";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':title', $title);
+            $stmt->bindParam(':author', $author);
+            $stmt->bindParam(':content', $content);
+            $stmt->bindParam(':date', $date);
         }
 
-        $this->db->exec($query);  //VULN: SQL-Injection via postId variable (G21_0018)
+        //VULN: SQL-Injection via postId variable (G21_0018)
+        // I believe this is fixed
+        $stmt->execute();
+         
         return $this->db->lastInsertId(); //Bad-Practice: No erro check if insertion worked
     }
 }

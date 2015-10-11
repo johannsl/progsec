@@ -45,9 +45,13 @@ class CommentRepository
 
     public function findByPostId($postId)
     {
-        $query   = "SELECT * FROM comments WHERE belongs_to_post = $postId"; // SQL injection (G21_0018)
-        $rows = $this->db->query($query)->fetchAll();
-
+        // SQL injection (G21_0018)
+        // I believe this is fixed
+        $query = "SELECT * FROM comments WHERE belongs_to_post = :postId";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':postId', $postId);
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
         return array_map([$this, 'makeFromRow'], $rows);
     }
 
