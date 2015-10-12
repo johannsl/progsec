@@ -32,15 +32,15 @@ class LoginController extends Controller
 
         if ($this->auth->checkCredentials($user, $pass)) {
             $_SESSION['user'] = $user;
-            setcookie("user", $user); // These cookies are terrible! G21_0002
-            setcookie("password",  $pass);
-            $isAdmin = $this->auth->user()->isAdmin();
+            //setcookie("user", $user); // These cookies are terrible! G21_0002
+          //  setcookie("password",  $pass);
+           
 
-            if ($isAdmin) {
+           /* if ($isAdmin) {
                 setcookie("isadmin", "yes");
             } else {
                 setcookie("isadmin", "no");
-            }
+            }*/
 
             $this->app->flash('info', "You are now successfully logged in as $user.");
             $this->app->redirect('/');

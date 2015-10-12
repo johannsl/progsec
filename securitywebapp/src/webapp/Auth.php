@@ -76,10 +76,10 @@ class Auth
     public function isAdmin()
     {
         if ($this->check()) {
-            return $_COOKIE['isadmin'] === 'yes'; // Again with the terrible cookie use. G21_0002
+             $isAdmin = $this->auth->user()->isAdmin();
         }
 
-        throw new Exception('Not logged in but called Auth::isAdmin() anyway');
+        throw new Exception('Please login ');
     }
 
     public function logout()
