@@ -38,8 +38,9 @@
                 {% endif %}
 
                 <br>
-
+                {% if isAdmin %}
                 <a href="/users">All users (DEBUG FEATURE) </a> <br> {# VULN: Debug feature shown to non admin users (G21_0013)#}
+                 {% endif %}
             </div>
 
             <div id="content">
