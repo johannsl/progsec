@@ -21,8 +21,7 @@ $app = new Slim([
 
 ]);
 $app->error(function (\Exception $e) use ($app) {
-    //$app->render('error.php');
-	echo "Sorry, something went wrong...";
+    $app->render('error.twig');
 });
 
 
