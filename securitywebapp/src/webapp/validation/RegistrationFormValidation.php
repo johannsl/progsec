@@ -76,7 +76,8 @@ class RegistrationFormValidation
 
 
 function passwordStrength($p) {
-	if (strlen($p) < 8 || strlen($p) > 30) {
+	$chrArray = preg_split('//u',$p, -1, PREG_SPLIT_NO_EMPTY); #convert to chararray in order to keep unicode letters intact
+	if (sizeof($chrArray) < 8 || sizeof($chrArray) > 50) {
 		//message = "password should be between 8-30 characters.";
 		return 1;
 	}
@@ -84,8 +85,9 @@ function passwordStrength($p) {
 	$count_upper = 0;
 	$count_other = 0;
 	
-	for ($i = 0; $i < strlen($p); $i++) {
-		$c = ord($p[$i]);
+	foreach ($chrArray as $ch) {
+		$c = uniord($ch);
+		
 		if (isLowerCase($c)) {
 			$count_lower += 1;
 		}
@@ -114,14 +116,14 @@ function passwordStrength($p) {
 }
 
 function isLowerCase($c) {
-	if ($c >= 97 && $c <= 122) {
+	if (($c >= 97 && $c <= 122) || $c == 230 || $c == 248 || $c == 229) {
 		return true;
 	}
 	return false;
 }
 
 function isUpperCase($c) {
-	if ($c >= 65 && $c <= 90) {
+	if (($c >= 65 && $c <= 90) || $c == 198 || $c == 216 || $c == 197) {
 		return true;
 	}
 	return false;
@@ -132,4 +134,11 @@ function other($c) {
 		return true;
 	}
 	return false;
+}
+
+function uniord($u) {
+    $k = mb_convert_encoding($u, 'UCS-2LE', 'UTF-8');
+    $k1 = ord(substr($k, 0, 1));
+    $k2 = ord(substr($k, 1, 1));
+    return $k2 * 256 + $k1;
 }
