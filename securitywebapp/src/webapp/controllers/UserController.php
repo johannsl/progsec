@@ -125,7 +125,7 @@ class UserController extends Controller
             $user->setFullname($fullname);
             $user->setAddress($address);
             $user->setPostcode($postcode);
-			$this->setBankAccNum($bankAccNum);
+			$user->setBankAccNum($bankAccNum);
             $this->userRepository->save($user);
 
             $this->app->flashNow('info', 'Your profile was successfully saved.');

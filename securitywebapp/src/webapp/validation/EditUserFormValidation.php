@@ -58,7 +58,7 @@ class EditUserFormValidation
 			$this->validationErrors[] = 'Bank account number cannot be longer then 50 characters';
 		}
 		
-		if (!(ctype_alnum($bankAccNum))) // this should test if the bankAccNum consists only of letters and/or numbers
+		if (!(ctype_alnum($bankAccNum)) && !(empty($bankAccNum))) // this should test if the bankAccNum consists only of letters and/or numbers or is empry
 		{
 			$this->validationErrors[] = 'Bank account number can contain only numbers and/or letters';
 		}
