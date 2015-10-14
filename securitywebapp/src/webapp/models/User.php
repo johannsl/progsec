@@ -14,7 +14,7 @@ class User
     protected $email   = null;
     protected $bio     = 'Bio is empty.';
     protected $age;
-    protected $bankcard;
+    protected $bankAccNum;
     protected $isAdmin = 0;
 
     function __construct($username, $hash, $fullname, $address, $postcode)
@@ -24,8 +24,10 @@ class User
         $this->fullname = $fullname;
         $this->address = $address;
         $this->postcode = $postcode;
+		//$this->bankAccNum = $bankAccNum;
     }
 
+   // getters
     public function getUserId()
     {
         return $this->userId;
@@ -59,7 +61,13 @@ class User
     public function getFullname() {
         return $this->fullname;
     }
+	
+	public function getBankAccNum()
+    {
+        return $this->bankAccNum;
+    }
 
+	// setters
     public function setFullname($fullname) {
         $this->fullname = $fullname;
     }
@@ -77,14 +85,10 @@ class User
 
     }
 
-    public function setPostcode($postcode) {
+    public function setPostcode($postcode) 
+	{
         $this->postcode = $postcode;
-
-    }
-
-    public function isAdmin()
-    {
-        return $this->isAdmin === '1';
+		return $this;
     }
 
     public function setUserId($userId)
@@ -127,6 +131,17 @@ class User
     {
         $this->isAdmin = $isAdmin;
         return $this;
+    }
+	
+	public function setBankAccNum($bankAccNum) 
+	{
+        $this->bankAccNum = $bankAccNum;
+		return $this;
+    }
+	
+	public function isAdmin() // what is this function doing and why is it public? *aleksandar is just wondering*
+    {
+        return $this->isAdmin === '1';
     }
 
 }

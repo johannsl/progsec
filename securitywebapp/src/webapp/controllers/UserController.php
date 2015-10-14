@@ -35,6 +35,7 @@ class UserController extends Controller
         $fullname = $request->post('fullname');
         $address = $request->post('address');
         $postcode = $request->post('postcode');
+		// possibly bank account here, but we agreed not to
 
 
         $validation = new RegistrationFormValidation($username, $password, $fullname, $address, $postcode);
@@ -113,8 +114,9 @@ class UserController extends Controller
         $fullname = $request->post('fullname');
         $address = $request->post('address');
         $postcode = $request->post('postcode');
+		$bankAccNum = $request->post('bankAccNum');
 
-        $validation = new EditUserFormValidation($email, $bio, $age);
+        $validation = new EditUserFormValidation($email, $bio, $age, $bankAccNum);
 
         if ($validation->isGoodToGo()) {
             $user->setEmail(new Email($email));
@@ -123,6 +125,7 @@ class UserController extends Controller
             $user->setFullname($fullname);
             $user->setAddress($address);
             $user->setPostcode($postcode);
+			$this->setBankAccNum($bankAccNum);
             $this->userRepository->save($user);
 
             $this->app->flashNow('info', 'Your profile was successfully saved.');
