@@ -8,7 +8,6 @@ use tdt4237\webapp\repository\UserRepository;
 
 class Auth
 {
-
     /**
      * @var Hash
      */
@@ -76,17 +75,19 @@ class Auth
     public function isAdmin()
     {
         if ($this->check()) {
-             $isAdmin = $this->auth->user()->isAdmin();
+
+            return $_SESSION['isAdmin'];
         }
 
-        throw new Exception('Please login ');
+        throw new Exception('Not logged in but called Auth::isAdmin() anyway');
     }
 
     public function logout()
     {
-        if($this->guest()) {
+        //if($this->guest()) {
+            unset($_SESSION['user']);
             session_destroy(); // This is not a safe logout. G21_0003
-        }
+        //}
     }
 
 }
