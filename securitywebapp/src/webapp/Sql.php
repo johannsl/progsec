@@ -38,9 +38,9 @@ class Sql
         $hash2 = Hash::make('bobdylan');
         $hash3 = Hash::make('liverpool');
 
-        $q1 = "INSERT INTO users(user, pass, isadmin, fullname, address, postcode) VALUES ('admin', '$hash1', 1, 'admin', 'homebase', '9090')";
-        $q2 = "INSERT INTO users(user, pass, isadmin, fullname, address, postcode) VALUES ('bob', '$hash2', 1, 'Robert Green', 'Greenland Grove 9', '2010')";
-        $q3 = "INSERT INTO users(user, pass, isadmin, fullname, address, postcode) VALUES ('bjarni', '$hash3', 1, 'Bjarni Torgmund', 'Hummerdale 12', '4120')";
+        $q1 = "INSERT INTO users(user, pass, isadmin, fullname, address, postcode, bankAccNum) VALUES ('admin', '$hash1', 1, 'admin', 'homebase', '9090', '111a')";
+        $q2 = "INSERT INTO users(user, pass, isadmin, fullname, address, postcode, bankAccNum) VALUES ('bob', '$hash2', 1, 'Robert Green', 'Greenland Grove 9', '2010', '222a')";
+        $q3 = "INSERT INTO users(user, pass, isadmin, fullname, address, postcode, bankAccNum) VALUES ('bjarni', '$hash3', 1, 'Bjarni Torgmund', 'Hummerdale 12', '4120', '333a')";
 
         self::$pdo->exec($q1);
         self::$pdo->exec($q2);

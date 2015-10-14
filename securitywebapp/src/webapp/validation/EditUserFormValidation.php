@@ -52,7 +52,6 @@ class EditUserFormValidation
 	
 	private function validateBankAccNum($bankAccNum)
     {
-		// think this through
 		if (strlen($bankAccNum) > 50) // this is our VARCHAR limit
 		{
 			$this->validationErrors[] = 'Bank account number cannot be longer then 50 characters';

@@ -24,7 +24,7 @@ class User
         $this->fullname = $fullname;
         $this->address = $address;
         $this->postcode = $postcode;
-		//$this->bankAccNum = $bankAccNum;
+		$this->bankAccNum = '';
     }
 
    // getters
@@ -139,7 +139,7 @@ class User
 		return $this;
     }
 	
-	public function isAdmin() // what is this function doing and why is it public? *aleksandar is just wondering*
+	public function isAdmin() 
     {
         return $this->isAdmin === '1';
     }

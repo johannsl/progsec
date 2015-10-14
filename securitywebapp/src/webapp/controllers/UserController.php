@@ -2,6 +2,9 @@
 
 namespace tdt4237\webapp\controllers;
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 use tdt4237\webapp\models\Age;
 use tdt4237\webapp\models\Email;
 use tdt4237\webapp\models\User;
@@ -118,14 +121,15 @@ class UserController extends Controller
 
         $validation = new EditUserFormValidation($email, $bio, $age, $bankAccNum);
 
-        if ($validation->isGoodToGo()) {
+        if ($validation->isGoodToGo()) 
+		{
+			$user->setBankAccNum($bankAccNum);
             $user->setEmail(new Email($email));
             $user->setBio($bio);
             $user->setAge(new Age($age));
             $user->setFullname($fullname);
             $user->setAddress($address);
             $user->setPostcode($postcode);
-			$user->setBankAccNum($bankAccNum);
             $this->userRepository->save($user);
 
             $this->app->flashNow('info', 'Your profile was successfully saved.');
