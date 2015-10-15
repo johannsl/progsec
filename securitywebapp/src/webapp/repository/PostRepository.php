@@ -103,7 +103,7 @@ class PostRepository
 
         if ($post->getPostId() === null) {
             $query = "INSERT INTO posts (title, author, content, date) "
-                . "VALUES (':title', ':author', ':content', ':date')";
+                . "VALUES (:title, :author, :content, :date)";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':title', $title);
             $stmt->bindParam(':author', $author);
