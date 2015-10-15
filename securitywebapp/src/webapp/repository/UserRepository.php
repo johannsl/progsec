@@ -83,12 +83,14 @@ class UserRepository
 
     public function deleteByUsername($username)
     {
-        return $this->pdo->exec(
-            sprintf(self::DELETE_BY_NAME, $username)				#username should be filtered
-        );
+        // username should be filtered
+        // I believe this is fixed
+        if (ctype_alnum($username)) {
+            return $this->pdo->exec(sprintf(self::DELETE_BY_NAME, $username));
+        }
+
+        return false;
     }
-
-
 
     public function all()
     {

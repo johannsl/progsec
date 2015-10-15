@@ -43,7 +43,7 @@ class CommentRepository
         }
     }
 
-    public function findByPostId($postId)
+   public function findByPostId($postId)
     {
         // SQL injection (G21_0018)
         // I believe this is fixed

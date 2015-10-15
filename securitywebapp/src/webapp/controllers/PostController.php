@@ -15,7 +15,6 @@ class PostController extends Controller
         parent::__construct();
     }
 
-
     public function index()
     {
         $posts = $this->postRepository->all();
@@ -38,9 +37,6 @@ class PostController extends Controller
             $variables['msg'] = $message;
 
         }
-
-
-
 
         $this->render('showpost.twig', [
             'post' => $post,

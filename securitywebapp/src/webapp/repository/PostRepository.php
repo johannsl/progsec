@@ -92,9 +92,10 @@ class PostRepository
         return $stmt->execute();
     }
 
-
     public function save(Post $post)
     {
+        //VULN: SQL-Injection via postId variable (G21_0018)
+        // I believe this is fixed
         $title   = $post->getTitle();
         $author = $post->getAuthor();
         $content = $post->getContent();
@@ -108,12 +109,9 @@ class PostRepository
             $stmt->bindParam(':author', $author);
             $stmt->bindParam(':content', $content);
             $stmt->bindParam(':date', $date);
+            $stmt->execute();
         }
 
-        //VULN: SQL-Injection via postId variable (G21_0018)
-        // I believe this is fixed
-        $stmt->execute();
-         
         return $this->db->lastInsertId(); //Bad-Practice: No erro check if insertion worked
     }
 }
