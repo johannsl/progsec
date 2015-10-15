@@ -34,19 +34,19 @@ class PostRepository
     public function find($postId)
     {
         //VULN: SQL-Injection via postId variable (G21_0018)
-        // I believe this is fixed
-        $sql  = "SELECT * FROM posts WHERE postId = :postId";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':postId', $postId);
-        $result = $stmt->execute();
-        $row = $result->fetch();
-
-        if($row === false) {
-            return false;
+        // I believe this is fixed by only allowing numberic input.
+        // This is not a pretty fix, but it should hold...
+        if (ctype_digit($postId)) {
+            $sql  = "SELECT * FROM posts WHERE postId = $postId";
+            $result = $this->db->query($sql);
+            $row = $result->fetch(); 
+            if($row === false) {
+                return false;
+            }
+            return $this->makeFromRow($row);
         }
 
-
-        return $this->makeFromRow($row);
+        return false;
     }
 
     public function all()
