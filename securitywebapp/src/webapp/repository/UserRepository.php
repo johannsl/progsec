@@ -113,20 +113,66 @@ class UserRepository
 
     public function saveNewUser(User $user)
     {
-        $query = sprintf(
-            self::INSERT_QUERY, $user->getUsername(), $user->getHash(), $user->getEmail(), $user->getAge(), $user->getBio(), $user->isAdmin(), $user->getFullname(), $user->getAddress(), $user->getPostcode()
-        );		#these values should also be sanitized
+        // These values should be sanitized
+        // I believe this is fixed
+        $query = (
+            "INSERT INTO users VALUES(:userid, :username, :hash, :email, :fullname, :address, :postcode, :age, :bio, :admin)"
+        );
+        $stmt = $this->pdo->prepare($query);
+        
+        $userid = $user->getUserId();
+        $username = $user->getUsername();
+        $hash = $user->getHash();
+        $email = $user->getEmail();
+        $age = $user->getAge();
+        $bio = $user->getBio();
+        $admin = $user->isAdmin();
+        $fullname = $user->getFullname();
+        $address = $user->getAddress();
+        $postcode = $user->getPostcode();
 
-        return $this->pdo->exec($query);
+        $stmt->bindParam(':userid', $userid);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':hash', $hash);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':age', $age);
+        $stmt->bindParam(':bio', $bio);
+        $stmt->bindParam(':admin', $admin);
+        $stmt->bindParam(':fullname', $fullname);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':postcode', $postcode);
+
+        return $stmt->execute();
     }
 
     public function saveExistingUser(User $user)
     {
-        $query = sprintf(
-            self::UPDATE_QUERY, $user->getEmail(), $user->getAge(), $user->getBio(), $user->isAdmin(), $user->getFullname(), $user->getAddress(), $user->getPostcode(), $user->getUserId()
-        );		#these values should also be sanitized
+        // These values should be sanitized
+        // I believe this is fixed
+        $query = (
+            "UPDATE users SET email=:email, age=:age, bio=:bio, isadmin=:admin, fullname=:fullname, address=:address, postcode=:postcode WHERE id=:userid"
+        );
+        $stmt = $this->pdo->prepare($query);
 
-        return $this->pdo->exec($query);
+        $email = $user->getEmail();
+        $age = $user->getAge();
+        $bio = $user->getBio();
+        $admin = $user->isAdmin();
+        $fullname = $user->getFullname();
+        $address = $user->getAddress();
+        $postcode = $user->getPostcode();
+        $userid = $user->getUserId();
+
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':age', $age);
+        $stmt->bindParam(':bio', $bio);
+        $stmt->bindParam(':admin', $admin);
+        $stmt->bindParam(':fullname', $fullname);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':postcode', $postcode);
+        $stmt->bindParam(':userid', $userid);
+         
+        return $stmt->execute();
     }
 
 }
