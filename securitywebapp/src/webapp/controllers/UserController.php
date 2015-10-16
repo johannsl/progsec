@@ -7,6 +7,7 @@ use tdt4237\webapp\models\Email;
 use tdt4237\webapp\models\User;
 use tdt4237\webapp\validation\EditUserFormValidation;
 use tdt4237\webapp\validation\RegistrationFormValidation;
+use tdt4237\webapp\repository\UserRepository;
 
 class UserController extends Controller
 {
@@ -35,11 +36,15 @@ class UserController extends Controller
         $fullname = $request->post('fullname');
         $address = $request->post('address');
         $postcode = $request->post('postcode');
-
-
+       
         $validation = new RegistrationFormValidation($username, $password, $fullname, $address, $postcode);
 
-        if ($validation->isGoodToGo()) {
+        $user = $this->app->userRepository->getNameByUsername($username);
+        if(strlen($user) > 0)
+        {
+            $this->app->flashNow('error', 'username taken');   
+            $this->render('newUserForm.twig');
+        }else if ($validation->isGoodToGo()) {
             $password = $password;
             $password = $this->hash->make($password);
             $user = new User($username, $password, $fullname, $address, $postcode);
@@ -47,11 +52,11 @@ class UserController extends Controller
 
             $this->app->flash('info', 'Thanks for creating a user. Now log in.');
             return $this->app->redirect('/login');
+        }else{
+            $errors = join("<br>\n", $validation->getValidationErrors());
+            $this->app->flashNow('error', $errors);
+            $this->render('newUserForm.twig', ['username' => $username]);
         }
-
-        $errors = join("<br>\n", $validation->getValidationErrors());
-        $this->app->flashNow('error', $errors);
-        $this->render('newUserForm.twig', ['username' => $username]);
     }
 
     public function all()
@@ -95,7 +100,6 @@ class UserController extends Controller
     public function showUserEditForm()
     {
         $this->makeSureUserIsAuthenticated();
-
         $this->render('edituser.twig', [
             'user' => $this->auth->user()
         ]);
