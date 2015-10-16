@@ -37,6 +37,9 @@
             <th>Age:</th>
             <td>{{ user.age }}</td>
             <tr></tr>
+			<th>Bank Account Number:</th>
+            <td>{{ user.bankAccNum }}</td>
+            <tr></tr>
     </table>
 {% else %}
     Could not find a user with username "{{ username|raw }}".  {#  The variable shouldn't be escaped  #}
