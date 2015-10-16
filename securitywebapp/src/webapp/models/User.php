@@ -16,15 +16,21 @@ class User
     protected $age;
     protected $bankAccNum;
     protected $isAdmin = 0;
+    protected $isDoctor = 0; 
+    protected $moneyReceived;
+    protected $moneySpent;
+    protected $isdoctor;
 
-    function __construct($username, $hash, $fullname, $address, $postcode)
+    function __construct($username, $hash, $fullname, $address, $postcode, $moneySpent, $moneyReceived)
     {
         $this->username = $username;
         $this->hash = $hash;
         $this->fullname = $fullname;
         $this->address = $address;
         $this->postcode = $postcode;
-		$this->bankAccNum = '';
+		$this->moneyReceived = $moneyReceived;
+        $this->moneySpent = $moneySpent;
+        
     }
 
    // getters
@@ -127,9 +133,25 @@ class User
         return $this;
     }
 
+    public function getMoneySpent()
+    {
+        return $this->moneySpent;
+    }
+
+    public function getMoneyReceived()
+    {
+        return $this->moneyReceived;
+    }
+
     public function setIsAdmin($isAdmin)
     {
         $this->isAdmin = $isAdmin;
+        return $this;
+    }
+
+    public function setIsDoctor($isDoctor)
+    {
+        $this->isDoctor = $isDoctor;
         return $this;
     }
 	
@@ -142,6 +164,11 @@ class User
 	public function isAdmin() 
     {
         return $this->isAdmin === '1';
+    }
+
+    public function isDoctor() 
+    {
+        return $this->isDoctor === '1';
     }
 
 }

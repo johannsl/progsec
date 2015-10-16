@@ -29,5 +29,23 @@
         <input type="text" name="bankAccNum" value="{{ user.bankAccNum }}"> <br />
 
         <input type="submit" name="submit" value="Save profile">
+        {% if ((user.isDoctor == 0 and user.bankAccNum|length > 0) or user.moneySpent > 0) or user.isDoctor == 1 %}	
+            <br/><h3>Payment information</h3>
+            <table>
+            {% if (user.isDoctor == 0 and user.bankAccNum|length > 0) or user.moneySpent > 0 %}	       
+                <tr>
+                    <th>Money spent (NOK):</th>
+                    <td>{{ user.moneySpent }}</td>
+                 </tr>
+            {% endif %}
+            {% if user.isDoctor == 1 %}	        
+                <tr>
+	                <th>Money received (NOK):</th>
+                    <td>{{ user.moneyReceived }}</td>
+                </tr>
+            {% endif %}
+            </table>
+        {% endif %}
     </form>
+    
 {% endblock %}
