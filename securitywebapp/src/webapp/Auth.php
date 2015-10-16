@@ -76,8 +76,7 @@ class Auth
     {
         if ($this->check()) {
             
-            return false;
-            //return $_SESSION['isAdmin'];
+            return $_SESSION['isAdmin'];
         }
 
         throw new Exception('Not logged in but called Auth::isAdmin() anyway');
