@@ -75,7 +75,7 @@ class Auth
     public function isAdmin()
     {
         if ($this->check()) {
-
+            
             return $_SESSION['isAdmin'];
         }
 
