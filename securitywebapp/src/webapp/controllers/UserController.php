@@ -7,7 +7,6 @@ use tdt4237\webapp\models\Email;
 use tdt4237\webapp\models\User;
 use tdt4237\webapp\validation\EditUserFormValidation;
 use tdt4237\webapp\validation\RegistrationFormValidation;
-use tdt4237\webapp\repository\UserRepository;
 
 class UserController extends Controller
 {
