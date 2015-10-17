@@ -26,21 +26,21 @@ class PostController extends Controller
 
     public function show($postId)
     {
-		//Check if user is logged in missing (G21_0011)
-        $post = $this->postRepository->find($postId);
-        $comments = $this->commentRepository->findByPostId($postId);
-        $request = $this->app->request;
-        $message = $request->get('msg');
-        $variables = [];
-
-
+        if ($this->auth->guest()) {
+            $this->app->flash("info", "You must be logged in to do that");
+            $this->app->redirect("/login");
+        }else{
+            $post = $this->postRepository->find($postId);
+            $comments = $this->commentRepository->findByPostId($postId);
+            $request = $this->app->request;
+            $message = $request->get('msg');
+            $variables = [];
+        }
+        
         if($message) {
             $variables['msg'] = $message;
 
         }
-
-
-
 
         $this->render('showpost.twig', [
             'post' => $post,
@@ -114,4 +114,3 @@ class PostController extends Controller
 
     }
 }
-
