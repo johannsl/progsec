@@ -35,19 +35,19 @@ class PostController extends Controller
             $request = $this->app->request;
             $message = $request->get('msg');
             $variables = [];
-        }
         
-        if($message) {
-            $variables['msg'] = $message;
+        
+            if($message) {
+                $variables['msg'] = $message;
 
+            }
+
+            $this->render('showpost.twig', [
+                'post' => $post,
+                'comments' => $comments,
+                'flash' => $variables
+            ]);
         }
-
-        $this->render('showpost.twig', [
-            'post' => $post,
-            'comments' => $comments,
-            'flash' => $variables
-        ]);
-
     }
 
     public function addComment($postId)
