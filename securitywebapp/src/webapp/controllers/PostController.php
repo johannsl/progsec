@@ -26,28 +26,28 @@ class PostController extends Controller
 
     public function show($postId)
     {
-		//Check if user is logged in missing (G21_0011)
-        $post = $this->postRepository->find($postId);
-        $comments = $this->commentRepository->findByPostId($postId);
-        $request = $this->app->request;
-        $message = $request->get('msg');
-        $variables = [];
+        if ($this->auth->guest()) {
+            $this->app->flash("info", "You must be logged in to do that");
+            $this->app->redirect("/login");
+        }else{
+            $post = $this->postRepository->find($postId);
+            $comments = $this->commentRepository->findByPostId($postId);
+            $request = $this->app->request;
+            $message = $request->get('msg');
+            $variables = [];
+        
+        
+            if($message) {
+                $variables['msg'] = $message;
 
+            }
 
-        if($message) {
-            $variables['msg'] = $message;
-
+            $this->render('showpost.twig', [
+                'post' => $post,
+                'comments' => $comments,
+                'flash' => $variables
+            ]);
         }
-
-
-
-
-        $this->render('showpost.twig', [
-            'post' => $post,
-            'comments' => $comments,
-            'flash' => $variables
-        ]);
-
     }
 
     public function addComment($postId)
@@ -93,7 +93,7 @@ class PostController extends Controller
             $request = $this->app->request;
             $title = $request->post('title');
             $content = $request->post('content');
-            $author = $request->post('author');
+            $author = $_SESSION['user'];
             $date = date("dmY");
             //we don't check these values on right way for $title,$content etc.
             $validation = new PostValidation($title, $author, $content);
@@ -108,10 +108,9 @@ class PostController extends Controller
             }
         }
 
-            $this->app->flashNow('error', join('<br>', $validation->getValidationErrors()));
+            $this->app->flashNow('error', join("\n", $validation->getValidationErrors()));
             $this->app->render('createpost.twig');
             // RENDER HERE
 
     }
 }
-

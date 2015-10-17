@@ -8,7 +8,6 @@ use tdt4237\webapp\repository\UserRepository;
 
 class Auth
 {
-
     /**
      * @var Hash
      */
@@ -76,7 +75,8 @@ class Auth
     public function isAdmin()
     {
         if ($this->check()) {
-            return $_COOKIE['isadmin'] === 'yes'; // Again with the terrible cookie use. G21_0002
+            
+            return $_SESSION['isAdmin'];
         }
 
         throw new Exception('Not logged in but called Auth::isAdmin() anyway');
