@@ -2,6 +2,9 @@
 
 namespace tdt4237\webapp\controllers;
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 use tdt4237\webapp\models\Age;
 use tdt4237\webapp\models\Email;
 use tdt4237\webapp\models\User;
@@ -35,11 +38,17 @@ class UserController extends Controller
         $fullname = $request->post('fullname');
         $address = $request->post('address');
         $postcode = $request->post('postcode');
-
+		
+        // possibly bank account here, but we agreed not to
 
         $validation = new RegistrationFormValidation($username, $password, $fullname, $address, $postcode);
 
-        if ($validation->isGoodToGo()) {
+        $user = $this->app->userRepository->getNameByUsername($username);
+        if(strlen($user) > 0)
+        {
+            $this->app->flashNow('error', 'username taken');   
+            $this->render('newUserForm.twig');
+        }else if ($validation->isGoodToGo()) {
             $password = $password;
             $password = $this->hash->make($password);
             $user = new User($username, $password, $fullname, $address, $postcode);
@@ -47,11 +56,11 @@ class UserController extends Controller
 
             $this->app->flash('info', 'Thanks for creating a user. Now log in.');
             return $this->app->redirect('/login');
+        }else{
+            $errors = join("<br>\n", $validation->getValidationErrors());
+            $this->app->flashNow('error', $errors);
+            $this->render('newUserForm.twig', ['username' => $username]);
         }
-
-        $errors = join("<br>\n", $validation->getValidationErrors());
-        $this->app->flashNow('error', $errors);
-        $this->render('newUserForm.twig', ['username' => $username]);
     }
 
     public function all()
@@ -95,7 +104,6 @@ class UserController extends Controller
     public function showUserEditForm()
     {
         $this->makeSureUserIsAuthenticated();
-
         $this->render('edituser.twig', [
             'user' => $this->auth->user()
         ]);
@@ -113,16 +121,20 @@ class UserController extends Controller
         $fullname = $request->post('fullname');
         $address = $request->post('address');
         $postcode = $request->post('postcode');
+		$bankAccNum = $request->post('bankAccNum');
 
-        $validation = new EditUserFormValidation($email, $bio, $age);
+        $validation = new EditUserFormValidation($email, $bio, $age, $bankAccNum);
 
-        if ($validation->isGoodToGo()) {
+        if ($validation->isGoodToGo()) 
+		{
+			$user->setBankAccNum($bankAccNum);
             $user->setEmail(new Email($email));
             $user->setBio($bio);
             $user->setAge(new Age($age));
             $user->setFullname($fullname);
             $user->setAddress($address);
             $user->setPostcode($postcode);
+			
             $this->userRepository->save($user);
 
             $this->app->flashNow('info', 'Your profile was successfully saved.');

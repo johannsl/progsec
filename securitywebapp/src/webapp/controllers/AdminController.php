@@ -36,7 +36,7 @@ class AdminController extends Controller
 	// G21_0009
     public function delete($username)
     {
-        if ($this->userRepository->deleteByUsername($username) === 1) {
+        if ( !($this->auth->guest()) && $this->auth->isAdmin() && $this->userRepository->deleteByUsername($username) === 1 ) {
             $this->app->flash('info', "Sucessfully deleted '$username'");
             $this->app->redirect('/admin');
             return;
@@ -46,10 +46,11 @@ class AdminController extends Controller
         $this->app->redirect('/admin');
     }
 
-	// there should be check if $this->auth->isAdmin() before deleting (G21_0009)
+	// there should be check if $this->auth->isAdmin() before deleting
+	// why is this not in the report? It was before...?
     public function deletePost($postId)
     {
-        if ($this->postRepository->deleteByPostid($postId) === 1) {
+        if ( !$this->auth->guest() && $this->auth->isAdmin() && $this->postRepository->deleteByPostid($postId) === 1) {
             $this->app->flash('info', "Sucessfully deleted '$postId'");
             $this->app->redirect('/admin');
             return;

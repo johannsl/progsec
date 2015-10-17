@@ -6,9 +6,9 @@ class EditUserFormValidation
 {
     private $validationErrors = [];
     
-    public function __construct($email, $bio, $age)
+    public function __construct($email, $bio, $age, $bankAccNum)
     {
-        $this->validate($email, $bio, $age);
+        $this->validate($email, $bio, $age, $bankAccNum);
     }
     
     public function isGoodToGo()
@@ -21,11 +21,12 @@ class EditUserFormValidation
         return $this->validationErrors;
     }
 
-    private function validate($email, $bio, $age)
+    private function validate($email, $bio, $age, $bankAccNum)
     {
         $this->validateEmail($email);
         $this->validateAge($age);
         $this->validateBio($bio);
+		$this->validateBankAccNum($bankAccNum);
     }
     
     private function validateEmail($email)
@@ -47,5 +48,18 @@ class EditUserFormValidation
         if (empty($bio)) {
             $this->validationErrors[] = 'Bio cannot be empty';
         }
+    }
+	
+	private function validateBankAccNum($bankAccNum)
+    {
+		if (strlen($bankAccNum) > 50) // this is our VARCHAR limit
+		{
+			$this->validationErrors[] = 'Bank account number cannot be longer then 50 characters';
+		}
+		
+		if (!(ctype_alnum($bankAccNum)) && !(empty($bankAccNum))) // this should test if the bankAccNum consists only of letters and/or numbers or is empry
+		{
+			$this->validationErrors[] = 'Bank account number can contain only numbers and/or letters';
+		}
     }
 }
