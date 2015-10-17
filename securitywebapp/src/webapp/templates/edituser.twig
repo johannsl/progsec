@@ -5,7 +5,7 @@
     <h2>Edit profile</h2>
 
     <form action="" method="POST">
-        <div id="flasherror">{{ flash.error | raw}}</div>
+        <div id="flasherror">{{ flash.error|nl2br }}</div>
 
         <label>Full name:</label>
         <input type = "text" name="fullname" value= "{{ user.fullname }}"> <br />
