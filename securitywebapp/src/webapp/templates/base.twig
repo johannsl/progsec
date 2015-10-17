@@ -43,7 +43,7 @@
             </div>
 
             <div id="content">
-                <div id="flashinfo">{{ flash.info|raw }}</div>  {# VULN: possible XSS in flash.info (New VULN)#}
+                <div id="flashinfo">{{ flash.info }}</div>  {# VULN: possible XSS in flash.info (New VULN)#}
                 {% block content %}{% endblock %}
             </div>
         </div>

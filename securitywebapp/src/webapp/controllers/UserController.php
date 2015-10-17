@@ -141,7 +141,7 @@ class UserController extends Controller
             return $this->render('edituser.twig', ['user' => $user]);
         }
 
-        $this->app->flashNow('error', join('<br>', $validation->getValidationErrors()));
+        $this->app->flashNow('error', join("\n", $validation->getValidationErrors()));
         $this->render('edituser.twig', ['user' => $user]);
     }
 
