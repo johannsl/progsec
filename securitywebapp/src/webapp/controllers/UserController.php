@@ -63,17 +63,12 @@ class UserController extends Controller
         }
     }
 
-    public function all()
-    {
-        $this->render('users.twig', [
-            'users' => $this->userRepository->all()
-        ]);
-    }
 
     public function logout()
     {
         $this->auth->logout(); 
-        $this->app->redirect('http://google.com'); // Redirect should go to home page no Google (G21_0003)
+        $this->app->redirect('/');
+       // $this->app->redirect('http://google.com'); // Redirect should go to home page no Google (G21_0003)
     }
 
     public function show($username)
