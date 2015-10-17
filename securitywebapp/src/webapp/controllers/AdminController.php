@@ -46,10 +46,39 @@ class AdminController extends Controller
         $this->app->redirect('/admin');
     }
 
+    public function toggleDoctor($username, $isdoctor) {
+
+        if($this->auth->guest() || !$this->auth->isAdmin()) {
+            $this->app->flash('info', "You must be administrator to view the admin page.");
+            $this->app->redirect('/');
+            return;
+        }
+
+        $targetUser = $this->userRepository->findByUser($username);
+        if($targetUser == false) {
+            $this->app->flash('info', "Error switching doctor status on user: User not found.");
+            $this->app->redirect('/admin');
+            return;
+        }
+
+        if(!ctype_digit($isdoctor) || ($isdoctor != 0 && $isdoctor != 1)) {
+            $this->app->flash('info', "Error switching doctor status on user: Online 0 or 1 are valid status inputs.");
+            $this->app->redirect('/admin');
+            return;
+        }
+
+        $targetUser->setIsDoctor($isdoctor);
+        $this->userRepository->save($targetUser);
+         $this->app->flash('info', "'$username' was successfully " . (($isdoctor) == 0 ? "un" : "") . "set as doctor");
+         $this->app->redirect('/admin');
+         return;
+    }
+
 	// there should be check if $this->auth->isAdmin() before deleting
 	// why is this not in the report? It was before...?
     public function deletePost($postId)
     {
+
         if ( !$this->auth->guest() && $this->auth->isAdmin() && $this->postRepository->deleteByPostid($postId) === 1) {
             $this->app->flash('info', "Sucessfully deleted '$postId'");
             $this->app->redirect('/admin');

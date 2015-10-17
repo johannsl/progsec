@@ -11,10 +11,16 @@
         <th>Username</th>
     </tr>
     {% for user in users %}
+    
         <tr>
             <td>{{ user.userid|raw }}</td>
             <td><a href="/user/{{ user.username|raw }}">{{ user.username|raw }}</a></td>
             <td><a href="/admin/delete/{{ user.username|raw }}">Delete this user</a></td>
+            {% if user.isdoctor == 0 %}
+                <td><a href="/admin/toggledoctor/{{ user.username }}/1">Set as doctor</a></td>
+            {% else %}
+                <td><a href="/admin/toggledoctor/{{ user.username }}/0">Unset as doctor</a></td>
+            {% endif %}
         </tr>
     {% endfor %}
     </table>
