@@ -75,7 +75,6 @@ $app->post('/forgot', $ns . 'ForgotPasswordController:submitName');
 
 $app->get('/user/:username', $ns . 'UserController:show')->name('showuser');
 
-$app->get('/users', $ns . 'UserController:all');
 
 $app->get('/posts/new', $ns . 'PostController:showNewPostForm')->name('createpost');
 $app->post('/posts/new', $ns . 'PostController:create');
