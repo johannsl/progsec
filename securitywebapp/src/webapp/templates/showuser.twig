@@ -4,8 +4,8 @@
 
 <h2>User</h2>
 
-{{ flash.info}} <br />
-{{ flash.error}} <br />
+{{ flash.info }} <br />
+{{ flash.error }} <br />
 
 {% if user %}
     <table>
@@ -24,9 +24,6 @@
             <tr></tr>
             <th>Postcode:</th>
             <td>{{  user.postcode }}</td>
-            <tr></tr>
-            <th>Hash:</th>
-            <td><!-- {{ user.hash|raw }} -->********************************(not shown)</td> {# VULN: Hash of admin password in HTML-comment  (G21_0005) #}
             <tr></tr>
             <th>Email:</th>
             <td>{{ user.email }}</td>
