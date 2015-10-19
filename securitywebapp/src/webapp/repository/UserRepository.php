@@ -11,7 +11,7 @@ use tdt4237\webapp\models\User;
 class UserRepository
 {
     const INSERT_QUERY   = "INSERT INTO users(user, pass, email, age, bio, isadmin, fullname, address, postcode) VALUES('%s', '%s', '%s' , '%s' , '%s', '%s', '%s', '%s', '%s')";
-    const UPDATE_QUERY   = "UPDATE users SET email='%s', age='%s', bio='%s', isadmin='%s', fullname ='%s', address = '%s', postcode = '%s' WHERE id='%s'";
+    const UPDATE_QUERY   = "UPDATE users SET email='%s', age='%s', bio='%s', isadmin='%s', fullname ='%s', address = '%s', postcode = '%s', bankAccNum = '%s' WHERE id='%s'";
     const FIND_BY_NAME   = "SELECT * FROM users WHERE user='%s'";		
     const DELETE_BY_NAME = "DELETE FROM users WHERE user='%s'";
     const SELECT_ALL     = "SELECT * FROM users";
@@ -29,13 +29,14 @@ class UserRepository
 
     public function makeUserFromRow(array $row)
     {
-        $user = new User($row['user'], $row['pass'], $row['fullname'], $row['address'], $row['postcode']);
+        $user = new User($row['user'], $row['pass'], $row['fullname'], $row['address'], $row['postcode'], $row['bankAccNum']);
         $user->setUserId($row['id']);
         $user->setFullname($row['fullname']);
         $user->setAddress(($row['address']));
         $user->setPostcode((($row['postcode']))); 
         $user->setBio($row['bio']);
         $user->setIsAdmin($row['isadmin']);
+		$user->setBankAccNum($row['bankAccNum']); // do I need this?
 
         if (!empty($row['email'])) {
             $user->setEmail(new Email($row['email']));
@@ -107,17 +108,33 @@ class UserRepository
         $query = sprintf(
             self::INSERT_QUERY, $user->getUsername(), $user->getHash(), $user->getEmail(), $user->getAge(), $user->getBio(), $user->isAdmin(), $user->getFullname(), $user->getAddress(), $user->getPostcode()
         );		#these values should also be sanitized
-
-        return $this->pdo->exec($query);
+		
+		if($query) 
+		{ 
+			return $this->pdo->exec($query);
+		} 
+		else 
+		{
+			$error = $this->pdo->errno . ' ' . $this->pdo->error;
+			echo $error; 
+		}
     }
 
     public function saveExistingUser(User $user)
-    {
+    { 
         $query = sprintf(
-            self::UPDATE_QUERY, $user->getEmail(), $user->getAge(), $user->getBio(), $user->isAdmin(), $user->getFullname(), $user->getAddress(), $user->getPostcode(), $user->getUserId()
+            self::UPDATE_QUERY, $user->getEmail(), $user->getAge(), $user->getBio(), $user->isAdmin(), $user->getFullname(), $user->getAddress(), $user->getPostcode(), $user->getBankAccNum(), $user->getUserId()
         );		#these values should also be sanitized
 
-        return $this->pdo->exec($query);
+        if($query) 
+		{ 
+			return $this->pdo->exec($query);
+		} 
+		else 
+		{
+			$error = $this->pdo->errno . ' ' . $this->pdo->error;
+			echo $error; 
+		}
     }
 
 }

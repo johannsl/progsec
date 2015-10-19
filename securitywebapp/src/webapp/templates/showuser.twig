@@ -4,20 +4,20 @@
 
 <h2>User</h2>
 
-{{ flash.info}} <br />
-{{ flash.error}} <br />
+{{ flash.info }} <br />
+{{ flash.error }} <br />
 
 {% if user %}
     <table>
         <tr>
             <th>Id</th>
-            <th>{{ user.userid }}</th>
+            <td>{{ user.userid }}</td>
             <tr></tr>
             <th>Username:</th>
-            <td>{{ user.username }}</th>
+            <td>{{ user.username }}</td>
             <tr></tr>
             <th>Full Name:</th>
-            <td>{{ user.fullname }}</th>
+            <td>{{ user.fullname }}</td>
             <tr></tr>
             <th>Address:</th>
             <td>{{ user.address }} </td>
@@ -34,9 +34,12 @@
             <th>Age:</th>
             <td>{{ user.age }}</td>
             <tr></tr>
+			<th>Bank Account Number:</th>
+            <td>{{ user.bankAccNum }}</td>
+            <tr></tr>
     </table>
 {% else %}
-    Could not find a user with username "{{ username|raw }}".  {#  The variable shouldn't be escaped  #}
+    Could not find a user with username "{{ username }}".
 {% endif %}
 
 {% endblock %}
