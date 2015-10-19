@@ -11,17 +11,11 @@
         <th>Username</th>
     </tr>
     {% for user in users %}
-    
         <tr>
-            <td>{{ user.userid|raw }}</td>
-            <td><a href="/user/{{ user.username|raw }}">{{ user.username|raw }}</a></td>
-            <td><a href="/admin/delete/{{ user.username|raw }}">Delete this user</a></td>
-            {% if user.isdoctor == 0 %}
-                <td><a href="/admin/toggledoctor/{{ user.username }}/1">Set as doctor</a></td>
-            {% else %}
-                <td><a href="/admin/toggledoctor/{{ user.username }}/0">Unset as doctor</a></td>
-            {% endif %}
-        </tr>
+            <td>{{ user.userid }}</td>
+            <td><a href="/user/{{ user.username }}">{{ user.username}}</a></td>
+            <td><a href="/admin/delete/{{ user.username}}/{{ csrftoken }}">Delete this user</a></td>
+        </tr> 
     {% endfor %}
     </table>
 {% else %}
@@ -37,8 +31,8 @@
         {% for post in posts %}
         <tr>
             <td><a href="/posts/{{ post.postid}}">{{ post.title }}</a></td>
-            <td><a href="/admin/delete/post/{{post.postid}}/{{csrftoken}}">Delete this post</a></td>
-        </tr>
+            <td><a href="/admin/delete/post/{{ post.postid}}/{{ csrftoken }}">Delete this post</a></td>
+        </tr>        
         {% endfor %}
     </table>
 {% else %}
