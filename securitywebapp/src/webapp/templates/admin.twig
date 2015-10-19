@@ -37,7 +37,7 @@
         {% for post in posts %}
         <tr>
             <td><a href="/posts/{{ post.postid}}">{{ post.title }}</a></td>
-            <td><a href="/admin/delete/post/{{ post.postid}}/{{ csrftoken }}">Delete this post</a></td>
+            <td><a href="/admin/delete/post/{{post.postid}}/{{csrftoken}}">Delete this post</a></td>
         </tr>
         {% endfor %}
     </table>

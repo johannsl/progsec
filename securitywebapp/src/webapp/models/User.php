@@ -65,10 +65,6 @@ class User
     public function getMoneyReceived() {
         return $this->moneyReceived;
     }
-    
-    public function getHash() {
-        return $this->hash;
-    }
 
     public function getEmail() {
         return $this->email;
