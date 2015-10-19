@@ -34,19 +34,15 @@ class PostRepository
     public function find($postId)
     {
         //VULN: SQL-Injection via postId variable (G21_0018)
-        // I believe this is fixed by only allowing numberic input.
-        // This is not a pretty fix, but it should hold...
-        if (ctype_digit($postId)) {
-            $sql  = "SELECT * FROM posts WHERE postId = $postId";
-            $result = $this->db->query($sql);
-            $row = $result->fetch(); 
-            if($row === false) {
-                return false;
-            }
-            return $this->makeFromRow($row);
+        // I believe this is fixed
+        $sql  = "SELECT * FROM posts WHERE postId = :postId";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':postId', $postId);
+        $row = false;
+        if(!$stmt->execute() || ($row=$stmt->fetch()) === false) {
+            return false;
         }
-
-        return false;
+        return $this->makeFromRow($row);
     }
 
     public function all()
@@ -88,7 +84,7 @@ class PostRepository
         // I believe this is fixed
         $sql = "DELETE FROM posts WHERE postid = :postId";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':postId', postId);
+        $stmt->bindParam(':postId', $postId);
         return $stmt->execute();
     }
 
@@ -96,15 +92,16 @@ class PostRepository
     {
         //VULN: SQL-Injection via postId variable (G21_0018)
         // I believe this is fixed
-        $title   = $post->getTitle();
-        $author = $post->getAuthor();
-        $content = $post->getContent();
-        $date    = $post->getDate();
-
         if ($post->getPostId() === null) {
             $query = "INSERT INTO posts (title, author, content, date) "
                 . "VALUES (:title, :author, :content, :date)";
             $stmt = $this->db->prepare($query);
+
+            $title   = $post->getTitle();
+            $author = $post->getAuthor();
+            $content = $post->getContent();
+            $date    = $post->getDate();
+
             $stmt->bindParam(':title', $title);
             $stmt->bindParam(':author', $author);
             $stmt->bindParam(':content', $content);
