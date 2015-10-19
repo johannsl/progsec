@@ -155,7 +155,7 @@ class UserRepository
 	$statement = $this->pdo->prepare(self::MONEY_PAYMENT);
     $statement->execute(array(':amount' => $amount_of_money, ':sourceUser' => $sourceUser->getUsername()));
     $statement = $this->pdo->prepare(self::MONEY_PAYMENT_RECEIVED);
-	$statement->execute(array(':amount' => $amount_of_money, ':targetUser' => $targetUser->getUsername()));
+	$statement->execute(array(':amount' => $amount_of_money-3, ':targetUser' => $targetUser->getUsername()));
     return true;
     }
 	
