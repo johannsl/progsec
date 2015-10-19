@@ -61,15 +61,15 @@ class RegistrationFormValidation
         }
 		 
 
-		 if (strlen($username) > 30) {		//30 is probably a okay max length
-			 $this->validationErrors[] = 'Username too long. Max 30 letters.';
+		 if (strlen($username) > 50) {		//30 is probably a okay max length
+			 $this->validationErrors[] = 'Username too long. Max 50 letters.';
 		 }
 		 //i figured we should check the other parameters for max length as well
-		 if (strlen($fullname) > 100) {	
-			 $this->validationErrors[] = 'Fullname too long. Max 100 letters.';
+		 if (strlen($fullname) > 50) {	
+			 $this->validationErrors[] = 'Fullname too long. Max 50 letters.';
 		 }
-		 if (strlen($address) > 100) {		
-			 $this->validationErrors[] = 'Address too long. Max 100 letters.';
+		 if (strlen($address) > 50) {		
+			 $this->validationErrors[] = 'Address too long. Max 50 letters.';
 		 }
     }
 }
