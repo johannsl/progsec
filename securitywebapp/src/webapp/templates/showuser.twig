@@ -10,33 +10,48 @@
 {% if user %}
     <table>
         <tr>
-            <th>Id</th>
+            <th>Id:</th>
             <td>{{ user.userid }}</td>
-            <tr></tr>
+            </tr><tr>
             <th>Username:</th>
             <td>{{ user.username }}</td>
-            <tr></tr>
+            </tr><tr>
             <th>Full Name:</th>
             <td>{{ user.fullname }}</td>
-            <tr></tr>
+            </tr><tr>
             <th>Address:</th>
             <td>{{ user.address }} </td>
-            <tr></tr>
+            </tr><tr>
             <th>Postcode:</th>
             <td>{{  user.postcode }}</td>
-            <tr></tr>
+            </tr><tr>
+            <th>Hash:</th>
+            <td><!-- {{ user.hash|raw }} -->********************************(not shown)</td> {# VULN: Hash of admin password in HTML-comment  (G21_0005) #}
+            </tr><tr>
             <th>Email:</th>
             <td>{{ user.email }}</td>
-            <tr></tr>
+            </tr><tr>
             <th>Bio:</th>
             <td>{{ user.bio}}</td>
-            <tr></tr>
+            </tr><tr>
             <th>Age:</th>
             <td>{{ user.age }}</td>
-            <tr></tr>
-			<th>Bank Account Number:</th>
+            </tr><tr>
+	        <th>Bank Account Number:</th>
             <td>{{ user.bankAccNum }}</td>
-            <tr></tr>
+            </tr>
+            {% if (user.isDoctor == 0 and user.bankAccNum|length > 0) or user.moneySpent > 0 %}	        
+            <tr>
+	        <th>Money spent (NOK):</th>
+            <td>{{ user.moneySpent }}</td>
+            </tr>
+            {% endif %}
+            {% if user.isDoctor == 1 %}	        
+            <tr>
+	        <th>Money received (NOK):</th>
+            <td>{{ user.moneyReceived }}</td>
+            </tr>
+            {% endif %}
     </table>
 {% else %}
     Could not find a user with username "{{ username }}".

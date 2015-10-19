@@ -15,7 +15,12 @@
             <td>{{ user.userid }}</td>
             <td><a href="/user/{{ user.username }}">{{ user.username}}</a></td>
             <td><a href="/admin/delete/{{ user.username}}/{{ csrftoken }}">Delete this user</a></td>
-        </tr>
+            {% if user.isdoctor == 0 %}
+                <td><a href="/admin/toggledoctor/{{ user.username }}/1">Set as doctor</a></td>
+            {% else %}
+                <td><a href="/admin/toggledoctor/{{ user.username }}/0">Unset as doctor</a></td>
+            {% endif %}
+        </tr> 
     {% endfor %}
     </table>
 {% else %}
@@ -32,7 +37,7 @@
         <tr>
             <td><a href="/posts/{{ post.postid}}">{{ post.title }}</a></td>
             <td><a href="/admin/delete/post/{{ post.postid}}/{{ csrftoken }}">Delete this post</a></td>
-        </tr>
+        </tr>        
         {% endfor %}
     </table>
 {% else %}

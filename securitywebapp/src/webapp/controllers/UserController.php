@@ -51,7 +51,7 @@ class UserController extends Controller
         }else if ($validation->isGoodToGo()) {
             $password = $password;
             $password = $this->hash->make($password);
-            $user = new User($username, $password, $fullname, $address, $postcode);
+            $user = new User($username, $password, $fullname, $address, $postcode, 0, 0);
             $this->userRepository->save($user);
 
             $this->app->flash('info', 'Thanks for creating a user. Now log in.');

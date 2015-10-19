@@ -11,11 +11,13 @@ use tdt4237\webapp\models\User;
 class UserRepository
 {
     const INSERT_QUERY   = "INSERT INTO users(user, pass, email, age, bio, isadmin, fullname, address, postcode) VALUES('%s', '%s', '%s' , '%s' , '%s', '%s', '%s', '%s', '%s')";
-    const UPDATE_QUERY   = "UPDATE users SET email='%s', age='%s', bio='%s', isadmin='%s', fullname ='%s', address = '%s', postcode = '%s', bankAccNum = '%s' WHERE id='%s'";
+    const UPDATE_QUERY   = "UPDATE users SET email='%s', age='%s', bio='%s', isadmin='%s', fullname ='%s', address = '%s', postcode = '%s', bankAccNum = '%s', isDoctor = '%s' WHERE id='%s'";
     const FIND_BY_NAME   = "SELECT * FROM users WHERE user='%s'";		
     const DELETE_BY_NAME = "DELETE FROM users WHERE user='%s'";
     const SELECT_ALL     = "SELECT * FROM users";
     const FIND_FULL_NAME   = "SELECT * FROM users WHERE user='%s'";
+    const MONEY_PAYMENT   = "UPDATE users SET moneySpent=moneySpent+:amount WHERE user=:sourceUser";
+    const MONEY_PAYMENT_RECEIVED = "UPDATE users SET moneyReceived=moneyReceived+:amount WHERE user=:targetUser";
 
     /**
      * @var PDO
@@ -29,14 +31,15 @@ class UserRepository
 
     public function makeUserFromRow(array $row)
     {
-        $user = new User($row['user'], $row['pass'], $row['fullname'], $row['address'], $row['postcode'], $row['bankAccNum']);
+        $user = new User($row['user'], $row['pass'], $row['fullname'], $row['address'], $row['postcode'], $row['moneySpent'], $row['moneyReceived']);
         $user->setUserId($row['id']);
         $user->setFullname($row['fullname']);
         $user->setAddress(($row['address']));
         $user->setPostcode((($row['postcode']))); 
         $user->setBio($row['bio']);
         $user->setIsAdmin($row['isadmin']);
-		$user->setBankAccNum($row['bankAccNum']); // do I need this?
+		$user->setBankAccNum($row['bankAccNum']); 
+        $user->setIsDoctor($row['isdoctor']); 
 
         if (!empty($row['email'])) {
             $user->setEmail(new Email($row['email']));
@@ -123,7 +126,7 @@ class UserRepository
     public function saveExistingUser(User $user)
     { 
         $query = sprintf(
-            self::UPDATE_QUERY, $user->getEmail(), $user->getAge(), $user->getBio(), $user->isAdmin(), $user->getFullname(), $user->getAddress(), $user->getPostcode(), $user->getBankAccNum(), $user->getUserId()
+            self::UPDATE_QUERY, $user->getEmail(), $user->getAge(), $user->getBio(), $user->isAdmin(), $user->getFullname(), $user->getAddress(), $user->getPostcode(), $user->getBankAccNum(), $user->isDoctor(), $user->getUserId()
         );		#these values should also be sanitized
 
         if($query) 
@@ -137,4 +140,24 @@ class UserRepository
 		}
     }
 
+    //Savly transfer money between users. Does not set the data on the user but updates the db directly, to prevent raice conditions
+    //the receivedMoney and SpentMoney values are only updated with this function, not when a user is normally saved to guarantee data consistentcy
+    public function payMoney($sourceUsername, $targetUsername, $amount_of_money) {
+
+	//we have to do the update in a transaction, because otherwise an concurrent moneytransaction could falsify the results
+	$targetUser = $this->findByUser($targetUsername);
+	$sourceUser = $this->findByUser($sourceUsername);
+	if($targetUser == $sourceUser || $targetUser == false || $sourceUser == false || strlen($sourceUser->getBankAccNum()) < 1 || 
+        (!ctype_digit($amount_of_money) && !is_int($amount_of_money)) || $amount_of_money <= 0) {
+		return false;
+	}
+	//we calculate the updates directly in the database instead on setting them to the users and saving them to cirumvent race conditions
+	$statement = $this->pdo->prepare(self::MONEY_PAYMENT);
+    $statement->execute(array(':amount' => $amount_of_money, ':sourceUser' => $sourceUser->getUsername()));
+    $statement = $this->pdo->prepare(self::MONEY_PAYMENT_RECEIVED);
+	$statement->execute(array(':amount' => $amount_of_money-3, ':targetUser' => $targetUser->getUsername()));
+    return true;
+    }
+	
+		
 }
