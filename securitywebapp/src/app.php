@@ -76,10 +76,7 @@ $app->get('/forgot', $ns . 'ForgotPasswordController:forgotPassword');
 $app->post('/forgot/:username', $ns . 'ForgotPasswordController:confirm');
 $app->post('/forgot', $ns . 'ForgotPasswordController:submitName');
 
-
 $app->get('/user/:username', $ns . 'UserController:show')->name('showuser');
-
-
 
 $app->get('/posts/new', $ns . 'PostController:showNewPostForm')->name('createpost');
 $app->post('/posts/new', $ns . 'PostController:create');
@@ -96,7 +93,7 @@ $app->get('/logout', $ns . 'UserController:logout')->name('logout');
 $app->get('/admin', $ns . 'AdminController:index')->name('admin');
 $app->get('/admin/delete/post/:postid/:csrftoken', $ns . 'AdminController:deletepost');
 $app->get('/admin/delete/:username/:csrftoken', $ns . 'AdminController:delete');
-$app->get('/admin/toggledoctor/:username/:isdoctor', $ns . 'AdminController:toggleDoctor');
+$app->get('/admin/toggledoctor/:username/:isdoctor/:csrftoken', $ns . 'AdminController:toggleDoctor');
 
 
 return $app;
