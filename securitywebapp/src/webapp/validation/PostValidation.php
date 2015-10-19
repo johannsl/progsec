@@ -4,12 +4,11 @@ namespace tdt4237\webapp\validation;
 
 use tdt4237\webapp\models\Post;
 
-class PostValidation {
+class PostValidation extends AbstractCsrfProtectedForm {
 
-    private $validationErrors = [];
 
-    public function __construct($author, $title, $content) {
-        return $this->validate($author, $title, $content);
+    public function __construct($author, $title, $content, $token) {
+        return array_merge($this->validate($author, $title, $content),parent::__construct($token));
     }
 
     public function isGoodToGo()

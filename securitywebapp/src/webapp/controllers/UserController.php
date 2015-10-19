@@ -117,8 +117,9 @@ class UserController extends Controller
         $address = $request->post('address');
         $postcode = $request->post('postcode');
 		$bankAccNum = $request->post('bankAccNum');
+        $token = $request->post('csrftoken');
 
-        $validation = new EditUserFormValidation($email, $bio, $age, $bankAccNum);
+        $validation = new EditUserFormValidation($email, $bio, $age, $bankAccNum,$token);
 
         if ($validation->isGoodToGo()) 
 		{

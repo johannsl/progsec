@@ -90,4 +90,18 @@ class Auth
         //}
     }
 
+    /*
+     * Generates a CSRV-Token by using a random function and returns it
+     */
+    public function generateCsrfToken() {
+         $csrftoken='';
+         try { //random_bytes may throw an exception when no method to generate randomness is avaiable, in this case us mt_rand
+                $csrftoken = bin2hex(openssl_random_pseudo_bytes(15));
+         } catch (Exception $e) {
+                $csrftoken = mt_rand(10000,1000000);
+        }
+
+        return $csrftoken;
+    }
+
 }
