@@ -50,15 +50,18 @@ class UserRepository
 
     public function getNameByUsername($username)
     {
+        // I DONT BELIEVE THIS METHOD IS EVER CALLED!
+        echo "getNameByUsername was called!";
+        echo $username;
+        
         // username should be filtered	
         // I believe this is fixed
-        if (ctype_alnum($username)) {
-            $query = sprintf(self::FIND_FULL_NAME, $username);
-            $result = $this->pdo->query($query, PDO::FETCH_ASSOC);	
-            $row = $result->fetch();
-            return $row['fullname'];
-        }
-
+        $query = sprintf(self::FIND_FULL_NAME, $username);
+        echo $username;
+        $stmt = $this->db->prepare($query);
+        //$result = $this->pdo->query($query, PDO::FETCH_ASSOC);	
+        $row = $result->fetch();
+        #return $row['fullname'];
         return false;
     }
 
@@ -66,30 +69,29 @@ class UserRepository
     {
         // username should be filtered
         // I believe this is fixed
-        if (ctype_alnum($username)) {
-            $query  = sprintf(self::FIND_BY_NAME, $username);
-            $result = $this->pdo->query($query, PDO::FETCH_ASSOC);		
-            $row = $result->fetch();
-        
-            if ($row === false) {
-                return false;
-            }
-
-            return $this->makeUserFromRow($row);
+        $query = "SELECT * FROM users WHERE user = :username";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':username', $username);
+        $row = false;
+        if(!$stmt->execute() || ($row=$stmt->fetch()) === false) {
+            return false;
         }
 
-        return false;
+        return $this->makeUserFromRow($row);
+
     }
 
     public function deleteByUsername($username)
     {
         // username should be filtered
         // I believe this is fixed
-        if (ctype_alnum($username)) {
-            return $this->pdo->exec(sprintf(self::DELETE_BY_NAME, $username));
+        if($this->findByUser($username)){
+            $query = "DELETE FROM users WHERE user = :username";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindParam(':username', $username);
+            $stmt->execute();
+            return 1;
         }
-
-        return false;
     }
 
     public function all()
