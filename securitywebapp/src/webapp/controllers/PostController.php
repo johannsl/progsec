@@ -6,6 +6,7 @@ use tdt4237\webapp\models\Post;
 use tdt4237\webapp\controllers\UserController;
 use tdt4237\webapp\models\Comment;
 use tdt4237\webapp\validation\PostValidation;
+use tdt4237\webapp\validation\CommentValidation;
 
 class PostController extends Controller
 {
@@ -33,19 +34,10 @@ class PostController extends Controller
             $post = $this->postRepository->find($postId);
             $comments = $this->commentRepository->findByPostId($postId);
             $request = $this->app->request;
-            $message = $request->get('msg');
-            $variables = [];
-        
-        
-            if($message) {
-                $variables['msg'] = $message;
-
-            }
 
             $this->render('showpost.twig', [
                 'post' => $post,
                 'comments' => $comments,
-                'flash' => $variables
             ]);
         }
     }
@@ -54,14 +46,21 @@ class PostController extends Controller
     {
 
         if(!$this->auth->guest()) {
-            //we save comment without checking
-            $comment = new Comment();
-            $comment->setAuthor($_SESSION['user']);
-            $comment->setText($this->app->request->post("text"));
-            $comment->setDate(date("dmY"));
-            $comment->setPost($postId);
-            $this->commentRepository->save($comment);
-            $this->app->redirect('/posts/' . $postId); //Possible VULN: Postid should be filtered for a / before redirecting
+            //now we save the comment with checking :-)
+            $request = $this->app->request;
+            $validation = new CommentValidation($request->post("text"), $postId, $request->post("csrftoken"));
+            if ($validation->isGoodToGo()) {
+                $comment = new Comment($request->post("text"));
+                $comment->setAuthor($_SESSION['user']);
+                $comment->setText($this->app->request->post("text"));
+                $comment->setDate(date("dmY"));
+                $comment->setPost($postId);
+                $this->commentRepository->save($comment);
+                $this->app->redirect('/posts/' . $postId); 
+            } else {
+                $this->app->flash('error', join("\n", $validation->getValidationErrors()));
+                $this->app->redirect('/posts/' . $postId);
+            }
         }
         else {
             $this->app->redirect('/login');
@@ -95,7 +94,6 @@ class PostController extends Controller
             $content = $request->post('content');
             $author = $_SESSION['user'];
             $date = date("dmY");
-            //we don't check these values on right way for $title,$content etc.
             $validation = new PostValidation($author, $title, $content, $request->post('csrftoken'));
             if ($validation->isGoodToGo()) {
                 $post = new Post();
@@ -104,7 +102,8 @@ class PostController extends Controller
                 $post->setContent($content);
                 $post->setDate($date);
                 $savedPost = $this->postRepository->save($post);
-                $this->app->redirect('/posts/' . $savedPost . '?msg="Post succesfully posted');
+                $this->app->flash('info', 'Post succesfully posted');
+                $this->app->redirect('/posts/' . $savedPost);
             }
         }
 
