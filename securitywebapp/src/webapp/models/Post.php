@@ -9,6 +9,7 @@ class Post
     protected $title;
     protected $content;
     protected $date;
+    protected $pay;
 
     public function getPostId() {
         return $this->postId;
@@ -53,5 +54,14 @@ class Post
 
     public function getTitle() {
         return $this->title;
+    }
+
+    public function setPay($pay) {
+        $this->pay = $pay;
+        return $this;
+    }
+    
+    public function getPay() {
+        return $this->pay;
     }
 }

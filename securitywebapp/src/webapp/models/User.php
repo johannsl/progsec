@@ -18,7 +18,6 @@ class User
     protected $isDoctor = 0; 
     protected $moneyReceived;
     protected $moneySpent;
-    protected $isdoctor = 0;
 
     function __construct($username, $hash, $fullname, $address, $postcode, $moneySpent, $moneyReceived)
     {

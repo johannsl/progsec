@@ -13,7 +13,7 @@ class PostValidation extends AbstractCsrfProtectedForm {
 
     public function isGoodToGo()
     {
-        return \count($this->validationErrors) ===0;
+        return \count($this->validationErrors) === 0;
     }
 
     public function getValidationErrors()

@@ -19,7 +19,7 @@ class PostRepository
         $this->db = $db;
     }
     
-    public static function create($id, $author, $title, $content, $date) //Bad-Practice: Should be private static
+    public static function create($id, $author, $title, $content, $date, $pay) //Bad-Practice: Should be private static
     {
         $post = new Post;
         
@@ -28,7 +28,8 @@ class PostRepository
             ->setAuthor($author)
             ->setTitle($title)
             ->setContent($content)
-            ->setDate($date);
+            ->setDate($date)
+            ->setPay($pay);
     }
 
     public function find($postId)
@@ -71,7 +72,8 @@ class PostRepository
             $row['author'],
             $row['title'],
             $row['content'],
-            $row['date']
+            $row['date'],
+            $row['pay']
         );
     }
 
@@ -87,10 +89,11 @@ class PostRepository
         $author = $post->getAuthor();
         $content = $post->getContent();
         $date    = $post->getDate();
+        $pay    = $post->getPay();
 
         if ($post->getPostId() === null) {
-            $query = "INSERT INTO posts (title, author, content, date) "
-                . "VALUES ('$title', '$author', '$content', '$date')";
+            $query = "INSERT INTO posts (title, author, content, date, pay) "
+                . "VALUES ('$title', '$author', '$content', '$date', '$pay')";
         }
 
         $this->db->exec($query);  //VULN: SQL-Injection via postId variable (G21_0018)

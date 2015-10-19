@@ -18,7 +18,7 @@ class Sql
     static function up()
     {
         $q1 = "CREATE TABLE users (id INTEGER PRIMARY KEY, user VARCHAR(50), pass VARCHAR(50), email varchar(50) default null, fullname varchar(50), address varchar(50), postcode varchar (4), age varchar(50), bio varhar(50), isadmin INTEGER, bankAccNum VARCHAR(50) default null, moneyReceived INTEGER DEFAULT 0, moneySpent INTEGER DEFAULT 0, isdoctor INTEGER DEFAULT 0);";
-        $q6 = "CREATE TABLE posts (postId INTEGER PRIMARY KEY AUTOINCREMENT, author TEXT, title TEXT NOT NULL, content TEXT NOT NULL, date TEXT NOT NULL, FOREIGN KEY(author) REFERENCES users(user));";
+        $q6 = "CREATE TABLE posts (postId INTEGER PRIMARY KEY AUTOINCREMENT, author TEXT, title TEXT NOT NULL, content TEXT NOT NULL, date TEXT NOT NULL, pay INTEGER, FOREIGN KEY(author) REFERENCES users(user));";
         $q7 = "CREATE TABLE comments(commentId INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT NOT NULL, author TEXT NOT NULL, text INTEGER NOT NULL, belongs_to_post INTEGER NOT NULL, FOREIGN KEY(belongs_to_post) REFERENCES posts(postId));";
 
         self::$pdo->exec($q1);
@@ -50,8 +50,8 @@ class Sql
     }
 
     static function insertPosts() {
-        $q4 = "INSERT INTO posts(author, date, title, content) VALUES ('bob', '26082015', 'I have a problem', 'I have a generic problem I think its embarrasing to talk about. Someone help?')";
-        $q5 = "INSERT INTO posts(author, date, title, content) VALUES ('bjarni', '26082015', 'I also have a problem', 'I generally fear very much for my health')";
+        $q4 = "INSERT INTO posts(author, date, title, content, pay) VALUES ('bob', '26082015', 'I have a problem', 'I have a generic problem I think its embarrasing to talk about. Someone help?', 1)";
+        $q5 = "INSERT INTO posts(author, date, title, content, pay) VALUES ('bjarni', '26082015', 'I also have a problem', 'I generally fear very much for my health', '')";
 
         self::$pdo->exec($q4);
         self::$pdo->exec($q5);

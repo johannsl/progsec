@@ -12,7 +12,6 @@ class AdminController extends Controller
         parent::__construct();
     }
 
-	//this seams OK
     public function index()
     {
         if ($this->auth->guest()) {
