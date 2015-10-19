@@ -34,8 +34,13 @@ class AdminController extends Controller
 
 	// there should be check if $this->auth->isAdmin() before deleting
 	// G21_0009
-    public function delete($username)
+    public function delete($username, $csrftoken)
     {
+        if($csrftoken != $_SESSION['csrftoken']) {
+            $this->app->flash('info', "CSRF-Token wrong. Did not delete user '$username'.");
+            $this->app->redirect('/admin');
+        }
+
         if ( !($this->auth->guest()) && $this->auth->isAdmin() && $this->userRepository->deleteByUsername($username) === 1 ) {
             $this->app->flash('info', "Sucessfully deleted '$username'");
             $this->app->redirect('/admin');
@@ -48,8 +53,13 @@ class AdminController extends Controller
 
 	// there should be check if $this->auth->isAdmin() before deleting
 	// why is this not in the report? It was before...?
-    public function deletePost($postId)
+    public function deletePost($postId,  $csrftoken)
     {
+        if($csrftoken != $_SESSION['csrftoken']) {
+            $this->app->flash('info', "CSRF-Token wrong. Did not delete post '$postId'.");
+            $this->app->redirect('/admin');
+        }
+
         if ( !$this->auth->guest() && $this->auth->isAdmin() && $this->postRepository->deleteByPostid($postId) === 1) {
             $this->app->flash('info', "Sucessfully deleted '$postId'");
             $this->app->redirect('/admin');
