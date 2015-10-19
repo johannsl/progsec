@@ -16,7 +16,7 @@ class Hash
 
     public static function make($plaintext)
     {
-        return hash('sha1', $plaintext . Hash::$salt);
+        return hash('sha256', $plaintext . Hash::$salt);
 
     }
 
