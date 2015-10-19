@@ -83,8 +83,6 @@ class UserRepository
         );
     }
 
-
-
     public function all()
     {
         $rows = $this->pdo->query(self::SELECT_ALL);
@@ -158,6 +156,4 @@ class UserRepository
 	$statement->execute(array(':amount' => $amount_of_money-3, ':targetUser' => $targetUser->getUsername()));
     return true;
     }
-	
-		
 }

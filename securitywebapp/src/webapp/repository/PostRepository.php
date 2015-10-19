@@ -41,7 +41,6 @@ class PostRepository
             return false;
         }
 
-
         return $this->makeFromRow($row);
     }
 
@@ -74,8 +73,6 @@ class PostRepository
             $row['content'],
             $row['date']
         );
-
-       //  $this->db = $db;
     }
 
     public function deleteByPostid($postId)
@@ -83,7 +80,6 @@ class PostRepository
         return $this->db->exec(
             sprintf("DELETE FROM posts WHERE postid='%s';", $postId)); //VULN: SQL-Injection via postId variable (new Vulnerability)
     }
-
 
     public function save(Post $post)
     {

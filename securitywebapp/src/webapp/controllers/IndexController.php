@@ -15,12 +15,12 @@ class IndexController extends Controller
     {
 //        $request = $this->app->request;
 //        $msg = $request->get('msg');
-
+//
 //        $variables = [];
-
-  //      if ($msg) {
-    //        $variables['flash']['info'] = $msg;
-    //    }
+//
+//        if ($msg) {
+//            $variables['flash']['info'] = $msg;
+//        }
 
         $this->render('index.twig');
     }

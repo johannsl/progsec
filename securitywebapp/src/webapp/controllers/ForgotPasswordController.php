@@ -8,13 +8,11 @@
 
 namespace tdt4237\webapp\controllers;
 
-
 class ForgotPasswordController extends Controller {
 
     public function __construct() {
         parent::__construct();
     }
-
 
     function forgotPassword() {
         $this->render('forgotPassword.twig', []);
@@ -52,9 +50,5 @@ class ForgotPasswordController extends Controller {
     function deny() {
 
     }
-
-
-
-
 
 } 

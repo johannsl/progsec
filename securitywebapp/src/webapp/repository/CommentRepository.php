@@ -7,7 +7,6 @@ use tdt4237\webapp\models\Comment;
 
 class CommentRepository
 {
-	
     /**
      * @var PDO
      */
@@ -18,7 +17,6 @@ class CommentRepository
 
     public function __construct(PDO $db)
     {
-
         $this->db = $db;
     }
 
@@ -30,7 +28,6 @@ class CommentRepository
         $date = (string) $comment->getDate();
         $postid = $comment->getPost();
 
-		
 		// SQL injection (G21_0018)
         if ($comment->getCommentId() === null) {
             $query = "INSERT INTO comments (author, text, date, belongs_to_post) "

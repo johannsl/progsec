@@ -10,8 +10,6 @@ abstract class AbstractCsrfProtectedForm
     {
         $this->validateCsrfToken($token);
     }
-    
-    
 	
 	private function validateCsrfToken($token)
     {

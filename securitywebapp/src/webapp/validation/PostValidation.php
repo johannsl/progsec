@@ -6,7 +6,6 @@ use tdt4237\webapp\models\Post;
 
 class PostValidation extends AbstractCsrfProtectedForm {
 
-
     public function __construct($author, $title, $content, $token) {
         parent::__construct($token);
         return $this->validate($author, $title, $content);
@@ -38,6 +37,4 @@ class PostValidation extends AbstractCsrfProtectedForm {
 
         return $this->validationErrors;
     }
-
-
 }

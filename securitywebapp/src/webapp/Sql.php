@@ -46,7 +46,6 @@ class Sql
         self::$pdo->exec($q2);
         self::$pdo->exec($q3);
 
-
         print "[tdt4237] Done inserting dummy users.".PHP_EOL;
     }
 
@@ -67,7 +66,6 @@ class Sql
         self::$pdo->exec($q2);
         print "[tdt4237] Done inserting comments.".PHP_EOL;
 
-
     }
 
     static function down()
@@ -75,8 +73,6 @@ class Sql
         $q1 = "DROP TABLE users";
         $q4 = "DROP TABLE posts";
         $q5 = "DROP TABLE comments";
-
-
 
         self::$pdo->exec($q1);
         self::$pdo->exec($q4);

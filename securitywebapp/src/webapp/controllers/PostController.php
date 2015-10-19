@@ -44,7 +44,6 @@ class PostController extends Controller
 
     public function addComment($postId)
     {
-
         if(!$this->auth->guest()) {
             //now we save the comment with checking :-)
             $request = $this->app->request;
@@ -110,6 +109,5 @@ class PostController extends Controller
             $this->app->flashNow('error', join("\n", $validation->getValidationErrors()));
             $this->render('createpost.twig', ['username' => $_SESSION['user']]);
             // RENDER HERE
-
     }
 }
