@@ -15,11 +15,19 @@ class Post
     protected $title;
     protected $content;
     protected $date;
+    protected $answer_by_doctor;
 
+    public function getAnswer_by_doctor(){
+        return $this->answer_by_doctor;
+    }
+
+    public function setAnswer_by_doctor($answer_by_doctor){
+        $this->answer_by_doctor = $answer_by_doctor;
+        return $this;
+    }
 
     public function getPostId() {
         return $this->postId;
-
     }
 
     public function setPostId($postId) {

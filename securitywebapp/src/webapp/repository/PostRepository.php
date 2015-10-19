@@ -19,7 +19,7 @@ class PostRepository
         $this->db = $db;
     }
     
-    public static function create($id, $author, $title, $content, $date) //Bad-Practice: Should be private static
+    public static function create($id, $author, $title, $content, $answer_by_doctor, $date) //Bad-Practice: Should be private static
     {
         $post = new Post;
         
@@ -28,6 +28,7 @@ class PostRepository
             ->setAuthor($author)
             ->setTitle($title)
             ->setContent($content)
+            ->setAnswer_by_doctor($answer_by_doctor)
             ->setDate($date);
     }
 
@@ -72,6 +73,7 @@ class PostRepository
             $row['author'],
             $row['title'],
             $row['content'],
+            $row['answer_by_doctor'],
             $row['date']
         );
 
