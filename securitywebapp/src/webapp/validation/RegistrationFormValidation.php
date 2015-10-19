@@ -62,8 +62,7 @@ class RegistrationFormValidation extends AbstractCsrfProtectedForm
             $this->validationErrors[] = 'Username can only contain letters and numbers';
         }
         
-        // 30 is probably a okay max length
-        if (strlen($username) > 30) {		
+        if (strlen($username) > 50) {		
     	    $this->validationErrors[] = 'Username too long. Max 30 letters.';
     	}
 
