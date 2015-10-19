@@ -5,10 +5,10 @@
 <h2>New user</h2>
 
 <b>{{ flash.info}}</b> <br />
-<b>{{ flash.error }}</b> <br />
+<b>{{ flash.error|nl2br }}</b> <br />
 
 <form action="" method="POST">
-
+    <input type="hidden" name="csrftoken" value= "{{ csrftoken }}"/>
     <label>Username: </label>
     <input type="text" name="user" value="{{ username }}"> <br />
     <label>Password: </label>

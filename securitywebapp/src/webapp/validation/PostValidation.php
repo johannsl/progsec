@@ -8,7 +8,8 @@ class PostValidation extends AbstractCsrfProtectedForm {
 
 
     public function __construct($author, $title, $content, $token) {
-        return array_merge($this->validate($author, $title, $content),parent::__construct($token));
+        parent::__construct($token);
+        return $this->validate($author, $title, $content);
     }
 
     public function isGoodToGo()
@@ -27,11 +28,11 @@ class PostValidation extends AbstractCsrfProtectedForm {
             $this->validationErrors[] = "Author needed";
 
         }
-        if ($title == null) {
+        if ($title == null || strlen($title) < 1) {
             $this->validationErrors[] = "Title needed";
         }
 
-        if ($content == null) {
+        if ($content == null || strlen($content) < 1) {
             $this->validationErrors[] = "Text needed";
         }
 

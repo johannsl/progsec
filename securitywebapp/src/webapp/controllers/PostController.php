@@ -96,7 +96,7 @@ class PostController extends Controller
             $author = $_SESSION['user'];
             $date = date("dmY");
             //we don't check these values on right way for $title,$content etc.
-            $validation = new PostValidation($title, $author, $content);
+            $validation = new PostValidation($author, $title, $content, $request->post('csrftoken'));
             if ($validation->isGoodToGo()) {
                 $post = new Post();
                 $post->setAuthor($author);
@@ -109,7 +109,7 @@ class PostController extends Controller
         }
 
             $this->app->flashNow('error', join("\n", $validation->getValidationErrors()));
-            $this->app->render('createpost.twig');
+            $this->render('createpost.twig', ['username' => $_SESSION['user']]);
             // RENDER HERE
 
     }
