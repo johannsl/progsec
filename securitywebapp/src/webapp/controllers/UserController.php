@@ -41,7 +41,7 @@ class UserController extends Controller
 		
         // possibly bank account here, but we agreed not to
 
-        $validation = new RegistrationFormValidation($username, $password, $fullname, $address, $postcode);
+        $validation = new RegistrationFormValidation($username, $password, $fullname, $address, $postcode, $request->post('csrftoken'));
 
         $user = $this->app->userRepository->getNameByUsername($username);
         if(strlen($user) > 0)
@@ -57,7 +57,7 @@ class UserController extends Controller
             $this->app->flash('info', 'Thanks for creating a user. Now log in.');
             return $this->app->redirect('/login');
         }else{
-            $errors = join("<br>\n", $validation->getValidationErrors());
+            $errors = join("\n", $validation->getValidationErrors());
             $this->app->flashNow('error', $errors);
             $this->render('newUserForm.twig', ['username' => $username]);
         }
@@ -117,8 +117,9 @@ class UserController extends Controller
         $address = $request->post('address');
         $postcode = $request->post('postcode');
 		$bankAccNum = $request->post('bankAccNum');
+        $token = $request->post('csrftoken');
 
-        $validation = new EditUserFormValidation($email, $bio, $age, $bankAccNum);
+        $validation = new EditUserFormValidation($email, $bio, $age, $bankAccNum,$token);
 
         if ($validation->isGoodToGo()) 
 		{

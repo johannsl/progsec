@@ -2,13 +2,13 @@
 
 namespace tdt4237\webapp\validation;
 
-class EditUserFormValidation
+class EditUserFormValidation extends AbstractCsrfProtectedForm
 {
-    private $validationErrors = [];
     
-    public function __construct($email, $bio, $age, $bankAccNum)
+    public function __construct($email, $bio, $age, $bankAccNum, $token)
     {
-        $this->validate($email, $bio, $age, $bankAccNum);
+        parent::__construct($token);
+        return $this->validate($email, $bio, $age, $bankAccNum);
     }
     
     public function isGoodToGo()

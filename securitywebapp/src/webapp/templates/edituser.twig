@@ -5,6 +5,7 @@
     <h2>Edit profile</h2>
 
     <form action="" method="POST">
+        <input type="hidden" name="csrftoken" value= "{{ csrftoken }}"/>
         <div id="flasherror">{{ flash.error|nl2br }}</div>
 
         <label>Full name:</label>

@@ -4,14 +4,16 @@ namespace tdt4237\webapp\validation;
 
 use tdt4237\webapp\models\User;
 
-class RegistrationFormValidation
+class RegistrationFormValidation extends AbstractCsrfProtectedForm 
+
 {
     const MIN_USER_LENGTH = 3;
-    
-    private $validationErrors = [];
-    
-    public function __construct($username, $password, $fullname, $address, $postcode)
-    {
+
+    protected $validationErrors = [];
+
+    public function __construct($username, $password, $fullname, $address, $postcode, $token)
+    {  
+        parent::__construct($token);
         return $this->validate($username, $password, $fullname, $address, $postcode);
     }
     
@@ -39,7 +41,7 @@ class RegistrationFormValidation
 		 if (passwordStrength($password) == 4) {
             $this->validationErrors[] = 'Password must contain at least two other symbols (e.g. nubers or +_, etc).';
         }
-
+        
         if(empty($fullname)) {
             $this->validationErrors[] = "Please write in your full name";
         }
@@ -59,27 +61,30 @@ class RegistrationFormValidation
         if (preg_match('/^[A-Za-z0-9_]+$/', $username) === 0) {
             $this->validationErrors[] = 'Username can only contain letters and numbers';
         }
-		 
+        
+        // 30 is probably a okay max length
+        if (strlen($username) > 30) {		
+    	    $this->validationErrors[] = 'Username too long. Max 30 letters.';
+    	}
 
-		 if (strlen($username) > 50) {		//30 is probably a okay max length
-			 $this->validationErrors[] = 'Username too long. Max 50 letters.';
-		 }
-		 //i figured we should check the other parameters for max length as well
-		 if (strlen($fullname) > 50) {	
-			 $this->validationErrors[] = 'Fullname too long. Max 50 letters.';
-		 }
-		 if (strlen($address) > 50) {		
-			 $this->validationErrors[] = 'Address too long. Max 50 letters.';
-		 }
+    	// I figured we should check the other parameters for max length as well
+    	if (strlen($fullname) > 50) {	
+    	    $this->validationErrors[] = 'Fullname too long. Max 50 letters.';
+    	}
+
+    	if (strlen($address) > 50) {		
+    	    $this->validationErrors[] = 'Address too long. Max 50 letters.';
+    	}
     }
 }
 
-
 function passwordStrength($p) {
-	$chrArray = preg_split('//u',$p, -1, PREG_SPLIT_NO_EMPTY); #convert to chararray in order to keep unicode letters intact
-	if (sizeof($chrArray) < 8) {
+    
+    // Convert to chararray in order to keep unicode letters intact
+	$chrArray = preg_split('//u',$p, -1, PREG_SPLIT_NO_EMPTY); 	if (sizeof($chrArray) < 8) {
 		return 1;
 	}
+
 	$count_lower = 0;
 	$count_upper = 0;
 	$count_other = 0;
@@ -98,18 +103,21 @@ function passwordStrength($p) {
 		}
 	}
 	if ($count_lower < 2) {
-		//message = "password should contain at least two lower case letters.
+
+		// Message = password should contain at least two lower case letters.
 		return 2;
 	}
 	if ($count_upper < 1) {
-		//password should contain at least one upper case letters.
+
+		// Password should contain at least one upper case letters.
 		return 3;
 	}
 	if ($count_other < 2) {
-		//password should contain at least two other symbols (e.g numbers or _+,... etc).
+
+		// Password should contain at least two other symbols (e.g numbers or _+,... etc).
 		return 4;
 	}
-	//decent password";
+	// Decent password
 	return 0;
 	
 }
@@ -135,7 +143,7 @@ function other($c) {
 	return false;
 }
 
-//partly copied from http://php.net/manual/en/function.ord.php#42778
+// Partly copied from http://php.net/manual/en/function.ord.php#42778
 function uniord($u) {
     $k = mb_convert_encoding($u, 'UCS-2LE', mb_detect_encoding($u));
     $k1 = ord(substr($k, 0, 1));
