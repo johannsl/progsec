@@ -1,9 +1,5 @@
 {% extends 'base.twig' %}
 
-{% if msg|length > 0 %}
-{% set  flash = flash|merge({'msg': msg})  %}
-{% endif %}
-
 {% block content %}
     <h3> {{ flash.msg }}</h3>
     <div id="flasherror">{{ flash.error|nl2br }}</div>
