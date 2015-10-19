@@ -4,11 +4,11 @@ namespace tdt4237\webapp\validation;
 
 use tdt4237\webapp\models\Post;
 
-class PostValidation {
+class PostValidation extends AbstractCsrfProtectedForm {
 
-    private $validationErrors = [];
 
-    public function __construct($author, $title, $content) {
+    public function __construct($author, $title, $content, $token) {
+        parent::__construct($token);
         return $this->validate($author, $title, $content);
     }
 
@@ -28,11 +28,11 @@ class PostValidation {
             $this->validationErrors[] = "Author needed";
 
         }
-        if ($title == null) {
+        if ($title == null || strlen($title) < 1) {
             $this->validationErrors[] = "Title needed";
         }
 
-        if ($content == null) {
+        if ($content == null || strlen($content) < 1) {
             $this->validationErrors[] = "Text needed";
         }
 

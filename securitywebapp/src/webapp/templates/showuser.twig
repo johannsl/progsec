@@ -4,36 +4,28 @@
 
 <h2>User</h2>
 
-{{ flash.info}} <br />
-{{ flash.error}} <br />
+{{ flash.info }} <br />
+{{ flash.error }} <br />
 
 {% if user %}
     <table>
         <tr>
             <th>Id</th>
-            <th>{{ user.userid }}</th>
-            </tr><tr>
-            <th>Username:</th>
-            <td>{{ user.username }}</td>
-             </tr><tr>
-            <th>Full Name:</th>
-            <td>{{ user.fullname }}</td>
-             </tr><tr>
             <th>Address:</th>
             <td>{{ user.address }} </td>
-             </tr><tr>
+            </tr><tr>
             <th>Postcode:</th>
             <td>{{  user.postcode }}</td>
-             </tr><tr>
+            </tr><tr>
             <th>Hash:</th>
             <td><!-- {{ user.hash|raw }} -->********************************(not shown)</td> {# VULN: Hash of admin password in HTML-comment  (G21_0005) #}
             </tr><tr>
             <th>Email:</th>
             <td>{{ user.email }}</td>
-             </tr><tr>
+            </tr><tr>
             <th>Bio:</th>
             <td>{{ user.bio}}</td>
-             </tr><tr>
+            </tr><tr>
             <th>Age:</th>
             <td>{{ user.age }}</td>
             </tr><tr>
@@ -54,7 +46,7 @@
             {% endif %}
     </table>
 {% else %}
-    Could not find a user with username "{{ username|raw }}".  {#  The variable shouldn't be escaped  #}
+    Could not find a user with username "{{ username }}".
 {% endif %}
 
 {% endblock %}

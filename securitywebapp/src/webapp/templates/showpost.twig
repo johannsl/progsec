@@ -1,17 +1,18 @@
 {% extends 'base.twig' %}
 
 {% block content %}
-    <h3> {{ flash.msg|raw }}</h3>
+    <h3> {{ flash.msg }}</h3>
+    <div id="flasherror">{{ flash.error|nl2br }}</div>
     {% if post %}
         <h2>{{ post.title}}</h2>
-        <h3> by {{post.author|raw}}</h3>
+        <h3> by {{post.author}}</h3>
         <p> {{ post.content }}</p>
         <lb></lb>
         <h2>COMMENTS</h2>
         {% for comment in comments %}
             <div class="review">
                 <b>Author:</b> {{ comment.author }} <b> posted on: {{ comment.date }} </b>
-                <pre> {{ comment.text|raw }}</pre>
+                <pre> {{ comment.text }}</pre>
             </div>
         {% else %}
             <br>
@@ -22,6 +23,7 @@
         <h2>Post your comment here</h2><br />
         <p>Comment: </p>
         <form method="post" action="">
+            <input type="hidden" name="csrftoken" value= "{{ csrftoken }}"/>
             <textarea cols="40" rows="10" name="text" ></textarea> <br />
             <input type="submit" value="Submit comment" name="submit"></button>
         </form>

@@ -16,10 +16,14 @@ chmod(__DIR__ . '/../web/uploads', 0700);
 
 $app = new Slim([
     'templates.path' => __DIR__.'/webapp/templates/',
-    'debug' => true,  //OTG-IDENT-005
+    'debug' => false, 
     'view' => new Twig()
 
 ]);
+$app->error(function (\Exception $e) use ($app) {
+    $app->render('error.twig');
+});
+
 
 $view = $app->view();
 $view->parserExtensions = array(
@@ -75,7 +79,7 @@ $app->post('/forgot', $ns . 'ForgotPasswordController:submitName');
 
 $app->get('/user/:username', $ns . 'UserController:show')->name('showuser');
 
-$app->get('/users', $ns . 'UserController:all');
+
 
 $app->get('/posts/new', $ns . 'PostController:showNewPostForm')->name('createpost');
 $app->post('/posts/new', $ns . 'PostController:create');
@@ -90,8 +94,8 @@ $app->get('/logout', $ns . 'UserController:logout')->name('logout');
 
 // Admin restricted area
 $app->get('/admin', $ns . 'AdminController:index')->name('admin');
-$app->get('/admin/delete/post/:postid', $ns . 'AdminController:deletepost');
-$app->get('/admin/delete/:username', $ns . 'AdminController:delete');
+$app->get('/admin/delete/post/:postid/:csrftoken', $ns . 'AdminController:deletepost');
+$app->get('/admin/delete/:username/:csrftoken', $ns . 'AdminController:delete');
 $app->get('/admin/toggledoctor/:username/:isdoctor', $ns . 'AdminController:toggleDoctor');
 
 

@@ -33,6 +33,9 @@ class LoginController extends Controller
         if ($this->auth->checkCredentials($user, $pass)) {
             $_SESSION['user'] = $user;
 			$_SESSION['isAdmin'] = $this->auth->user()->isAdmin();
+
+           
+            $_SESSION['csrftoken'] = $this->auth->generateCsrfToken(); //Additional safety precaution: Change csrv-token on login
            // setcookie("user", $user); // These cookies are terrible! G21_0002
            // setcookie("password",  $pass);
             /*$isAdmin = $this->auth->user()->isAdmin();

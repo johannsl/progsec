@@ -5,13 +5,14 @@
     <h2>Create post</h2>
 
     <form action="" method="POST">
-        <div id="flasherror">{{ flash.error }}</div>
+        <input type="hidden" name="csrftoken" value= "{{ csrftoken }}"/>
+        <div id="flasherror">{{ flash.error|nl2br }}</div>
 
         <label>Title:</label>
         <input type = "text" name="title"> <br />
 
         <label>Text:</label>
-        <textarea cols="40" rows="10" name="content"> </textarea><br />
+        <textarea cols="40" rows="10" name="content"></textarea><br />
 
         <label>Author:</label>
         <input type="text" name="author" readOnly="true" value="{{username}}"> <br />
