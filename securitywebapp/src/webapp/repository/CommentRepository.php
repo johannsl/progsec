@@ -24,26 +24,35 @@ class CommentRepository
 
     public function save(Comment $comment)
     {
-        $id = $comment->getCommentId();
-        $author  = $comment->getAuthor();
-        $text    = $comment->getText();
-        $date = (string) $comment->getDate();
-        $postid = $comment->getPost();
 
-		
 		// SQL injection (G21_0018)
+        // I believe this is fixed
         if ($comment->getCommentId() === null) {
-            $query = "INSERT INTO comments (author, text, date, belongs_to_post) "
-                . "VALUES ('$author', '$text', '$date', '$postid')";
-            return $this->db->exec($query);
+            $query = "INSERT INTO comments (author, text, date, belongs_to_post) VALUES (:author, :text, :date, :postid)";
+            $stmt = $this->db->prepare($query);
+
+            $author  = $comment->getAuthor();
+            $text    = $comment->getText();
+            $date = (string) $comment->getDate();
+            $postid = $comment->getPost();
+
+            $stmt->bindParam(':author', $author);
+            $stmt->bindParam(':text', $text);
+            $stmt->bindParam(':date', $date);
+            $stmt->bindparam(':postid', $postid);
+            return $stmt->execute();
         }
     }
 
-    public function findByPostId($postId)
+   public function findByPostId($postId)
     {
-        $query   = "SELECT * FROM comments WHERE belongs_to_post = $postId"; // SQL injection (G21_0018)
-        $rows = $this->db->query($query)->fetchAll();
-
+        // SQL injection (G21_0018)
+        // I believe this is fixed
+        $query = "SELECT * FROM comments WHERE belongs_to_post = :postId";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':postId', $postId);
+        $stmt->execute();
+        $rows = $stmt->fetchAll();
         return array_map([$this, 'makeFromRow'], $rows);
     }
 

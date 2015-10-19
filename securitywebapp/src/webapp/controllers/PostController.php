@@ -16,7 +16,6 @@ class PostController extends Controller
         parent::__construct();
     }
 
-
     public function index()
     {
         $posts = $this->postRepository->all();
@@ -40,6 +39,13 @@ class PostController extends Controller
                 'comments' => $comments,
             ]);
         }
+
+        $this->render('showpost.twig', [
+            'post' => $post,
+            'comments' => $comments,
+            'flash' => $variables
+        ]);
+
     }
 
     public function addComment($postId)

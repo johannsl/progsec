@@ -53,37 +53,50 @@ class UserRepository
     }
 
     public function getNameByUsername($username)
-    {						
-        $query = sprintf(self::FIND_FULL_NAME, $username);			#username should be filtered
-		
-        $result = $this->pdo->query($query, PDO::FETCH_ASSOC);	
+    {
+        // I DONT BELIEVE THIS METHOD IS EVER CALLED!
+        echo "getNameByUsername was called!";
+        echo $username;
+        
+        // username should be filtered	
+        // I believe this is fixed
+        $query = sprintf(self::FIND_FULL_NAME, $username);
+        echo $username;
+        $stmt = $this->db->prepare($query);
+        //$result = $this->pdo->query($query, PDO::FETCH_ASSOC);	
         $row = $result->fetch();
-        return $row['fullname'];
-
+        #return $row['fullname'];
+        return false;
     }
 
     public function findByUser($username)
     {
-        $query  = sprintf(self::FIND_BY_NAME, $username);			#username should be filtered
-        $result = $this->pdo->query($query, PDO::FETCH_ASSOC);		
-        $row = $result->fetch();
-        
-        if ($row === false) {
+        // username should be filtered
+        // I believe this is fixed
+        $query = "SELECT * FROM users WHERE user = :username";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':username', $username);
+        $row = false;
+        if(!$stmt->execute() || ($row=$stmt->fetch()) === false) {
             return false;
         }
 
-
         return $this->makeUserFromRow($row);
+
     }
 
     public function deleteByUsername($username)
     {
-        return $this->pdo->exec(
-            sprintf(self::DELETE_BY_NAME, $username)				#username should be filtered
-        );
+        // username should be filtered
+        // I believe this is fixed
+        if($this->findByUser($username)){
+            $query = "DELETE FROM users WHERE user = :username";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindParam(':username', $username);
+            $stmt->execute();
+            return 1;
+        }
     }
-
-
 
     public function all()
     {
@@ -108,36 +121,66 @@ class UserRepository
 
     public function saveNewUser(User $user)
     {
-        $query = sprintf(
-            self::INSERT_QUERY, $user->getUsername(), $user->getHash(), $user->getEmail(), $user->getAge(), $user->getBio(), $user->isAdmin(), $user->getFullname(), $user->getAddress(), $user->getPostcode()
-        );		#these values should also be sanitized
-		
-		if($query) 
-		{ 
-			return $this->pdo->exec($query);
-		} 
-		else 
-		{
-			$error = $this->pdo->errno . ' ' . $this->pdo->error;
-			echo $error; 
-		}
+        // These values should be sanitized
+        // I believe this is fixed
+        $query = (
+            "INSERT INTO users VALUES(:userid, :username, :hash, :email, :fullname, :address, :postcode, :age, :bio, :admin)"
+        );
+        $stmt = $this->pdo->prepare($query);
+        
+        $userid = $user->getUserId();
+        $username = $user->getUsername();
+        $hash = $user->getHash();
+        $email = $user->getEmail();
+        $age = $user->getAge();
+        $bio = $user->getBio();
+        $admin = $user->isAdmin();
+        $fullname = $user->getFullname();
+        $address = $user->getAddress();
+        $postcode = $user->getPostcode();
+
+        $stmt->bindParam(':userid', $userid);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':hash', $hash);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':age', $age);
+        $stmt->bindParam(':bio', $bio);
+        $stmt->bindParam(':admin', $admin);
+        $stmt->bindParam(':fullname', $fullname);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':postcode', $postcode);
+
+        return $stmt->execute();
     }
 
     public function saveExistingUser(User $user)
-    { 
-        $query = sprintf(
-            self::UPDATE_QUERY, $user->getEmail(), $user->getAge(), $user->getBio(), $user->isAdmin(), $user->getFullname(), $user->getAddress(), $user->getPostcode(), $user->getBankAccNum(), $user->isDoctor(), $user->getUserId()
-        );		#these values should also be sanitized
+    {
+        // These values should be sanitized
+        // I believe this is fixed
+        $query = (
+            "UPDATE users SET email=:email, age=:age, bio=:bio, isadmin=:admin, fullname=:fullname, address=:address, postcode=:postcode WHERE id=:userid"
+        );
+        $stmt = $this->pdo->prepare($query);
 
-        if($query) 
-		{ 
-			return $this->pdo->exec($query);
-		} 
-		else 
-		{
-			$error = $this->pdo->errno . ' ' . $this->pdo->error;
-			echo $error; 
-		}
+        $email = $user->getEmail();
+        $age = $user->getAge();
+        $bio = $user->getBio();
+        $admin = $user->isAdmin();
+        $fullname = $user->getFullname();
+        $address = $user->getAddress();
+        $postcode = $user->getPostcode();
+        $userid = $user->getUserId();
+
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':age', $age);
+        $stmt->bindParam(':bio', $bio);
+        $stmt->bindParam(':admin', $admin);
+        $stmt->bindParam(':fullname', $fullname);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':postcode', $postcode);
+        $stmt->bindParam(':userid', $userid);
+         
+        return $stmt->execute();
     }
 
     //Savly transfer money between users. Does not set the data on the user but updates the db directly, to prevent raice conditions
