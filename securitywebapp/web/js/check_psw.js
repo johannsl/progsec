@@ -11,8 +11,8 @@ function checkPassword(p) {
 }
 
 function passwordStrength(p) {
-	if (p.length < 8 || p.length > 50) {
-		message = "psw should be between 8-50 characters."; //upper boundary?
+	if (p.length < 8) {
+		message = "Password must be at least 8 characters."; //upper boundary?
 		return false;
 	}
 	var count_lower = 0;
@@ -32,18 +32,18 @@ function passwordStrength(p) {
 		}
 	}
 	if (count_lower < 2) {
-		message = "password should contain at least two lower case letters.";
+		message = "Password must contain at least two lower case letter.";
 		return false;
 	}
 	if (count_upper < 1) {
-		message = "password should contain at least one upper case letters.";
+		message = "Password must contain at least one upper case letter.";
 		return false;
 	}
 	if (count_other < 2) {
-		message = "password should contain at least two other symbols (e.g numbers or _+,... etc).";
+		message = "Password must contain at least two special symbols (e.g numbers or _+,... etc).";
 		return false;
 	}
-	message = "decent password";
+	message = "Password is ok";
 	return true;	
 }
 

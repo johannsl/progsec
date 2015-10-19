@@ -28,16 +28,16 @@ class RegistrationFormValidation
     private function validate($username, $password, $fullname, $address, $postcode)
     {
 		 if (passwordStrength($password) == 1) {
-            $this->validationErrors[] = 'Password should be between 8-30 characters.';
+            $this->validationErrors[] = 'Password must be at least 8 characters.';
         }
 		 if (passwordStrength($password) == 2) {
-            $this->validationErrors[] = 'Password should contain at least two lower case letters.';
+            $this->validationErrors[] = 'Password must contain at least two lower case letters.';
         }
 		 if (passwordStrength($password) == 3) {
-            $this->validationErrors[] = 'Password should contain at least one upper case letter.';
+            $this->validationErrors[] = 'Password must contain at least one upper case letter.';
         }
 		 if (passwordStrength($password) == 4) {
-            $this->validationErrors[] = 'Password should contain at least two other symbols (e.g. nubers or +_, etc).';
+            $this->validationErrors[] = 'Password must contain at least two other symbols (e.g. nubers or +_, etc).';
         }
 
         if(empty($fullname)) {
@@ -77,8 +77,7 @@ class RegistrationFormValidation
 
 function passwordStrength($p) {
 	$chrArray = preg_split('//u',$p, -1, PREG_SPLIT_NO_EMPTY); #convert to chararray in order to keep unicode letters intact
-	if (sizeof($chrArray) < 8 || sizeof($chrArray) > 50) {
-		//message = "password should be between 8-30 characters.";
+	if (sizeof($chrArray) < 8) {
 		return 1;
 	}
 	$count_lower = 0;
@@ -136,8 +135,9 @@ function other($c) {
 	return false;
 }
 
+//partly copied from http://php.net/manual/en/function.ord.php#42778
 function uniord($u) {
-    $k = mb_convert_encoding($u, 'UCS-2LE', 'UTF-8');
+    $k = mb_convert_encoding($u, 'UCS-2LE', mb_detect_encoding($u));
     $k1 = ord(substr($k, 0, 1));
     $k2 = ord(substr($k, 1, 1));
     return $k2 * 256 + $k1;
