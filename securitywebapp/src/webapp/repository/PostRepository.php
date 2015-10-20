@@ -33,15 +33,15 @@ class PostRepository
 
     public function find($postId)
     {
-        $sql  = "SELECT * FROM posts WHERE postId = $postId";
-        $result = $this->db->query($sql); //VULN: SQL-Injection via postId variable (G21_0018)
-        $row = $result->fetch();
-
-        if($row === false) {
+        //VULN: SQL-Injection via postId variable (G21_0018)
+        // I believe this is fixed
+        $sql  = "SELECT * FROM posts WHERE post_id = :postId";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':postId', $postId);
+        $row = false;
+        if(!$stmt->execute() || ($row=$stmt->fetch()) === false) {
             return false;
         }
-
-
         return $this->makeFromRow($row);
     }
 
@@ -68,7 +68,7 @@ class PostRepository
     public function makeFromRow($row)
     {
         return static::create(
-            $row['postId'],
+            $row['post_id'],
             $row['author'],
             $row['title'],
             $row['content'],
@@ -80,24 +80,35 @@ class PostRepository
 
     public function deleteByPostid($postId)
     {
-        return $this->db->exec(
-            sprintf("DELETE FROM posts WHERE postid='%s';", $postId)); //VULN: SQL-Injection via postId variable (new Vulnerability)
+        //VULN: SQL-Injection via postId variable (new Vulnerability)
+        // I believe this is fixed
+        $sql = "DELETE FROM posts WHERE post_id = :postId";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':postId', $postId);
+        return $stmt->execute();
     }
-
 
     public function save(Post $post)
     {
-        $title   = $post->getTitle();
-        $author = $post->getAuthor();
-        $content = $post->getContent();
-        $date    = $post->getDate();
-
+        //VULN: SQL-Injection via postId variable (G21_0018)
+        // I believe this is fixed
         if ($post->getPostId() === null) {
             $query = "INSERT INTO posts (title, author, content, date) "
-                . "VALUES ('$title', '$author', '$content', '$date')";
+                . "VALUES (:title, :author, :content, :date)";
+            $stmt = $this->db->prepare($query);
+
+            $title   = $post->getTitle();
+            $author = $post->getAuthor();
+            $content = $post->getContent();
+            $date    = $post->getDate();
+
+            $stmt->bindParam(':title', $title);
+            $stmt->bindParam(':author', $author);
+            $stmt->bindParam(':content', $content);
+            $stmt->bindParam(':date', $date);
+            $stmt->execute();
         }
 
-        $this->db->exec($query);  //VULN: SQL-Injection via postId variable (G21_0018)
         return $this->db->lastInsertId(); //Bad-Practice: No erro check if insertion worked
     }
 }
