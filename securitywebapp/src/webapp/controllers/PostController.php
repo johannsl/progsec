@@ -26,13 +26,11 @@ class PostController extends Controller
 
     public function show($postId)
     {
-        echo $postId;
         if ($this->auth->guest()) {
             echo $postId;
             $this->app->flash("info", "You must be logged in to do that");
             $this->app->redirect("/login");
         }else{
-            echo $postId;
             $post = $this->postRepository->find($postId);
             $comments = $this->commentRepository->findByPostId($postId);
             $request = $this->app->request;
