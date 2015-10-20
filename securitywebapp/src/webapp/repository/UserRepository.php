@@ -31,7 +31,7 @@ class UserRepository
 
     public function makeUserFromRow(array $row)
     {
-        $user = new User($row['user'], $row['pass'], $row['fullname'], $row['address'], $row['postcode'], $row['money_spent'], $row['money_received']);
+        $user = new User($row['user'], $row['pass'], $row['full_name'], $row['address'], $row['postcode'], $row['money_spent'], $row['money_received']);
         $user->setUserId($row['id']);
         $user->setFullname($row['full_name']);
         $user->setAddress(($row['address']));
@@ -54,19 +54,25 @@ class UserRepository
 
     public function getNameByUsername($username)
     {
-        // I DONT BELIEVE THIS METHOD IS EVER CALLED!
-        echo "getNameByUsername was called!";
-        echo $username;
-        
         // username should be filtered	
         // I believe this is fixed
-        $query = sprintf(self::FIND_FULL_NAME, $username);
         echo $username;
-        $stmt = $this->db->prepare($query);
+        $query = "SELECT full_name FROM users WHERE user = :username";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':username', $username);
+        $row = false;
+        if (!$stmt->execute()) { //|| $row=$stmt->fetch() ===false) {
+            return false;
+        }
+
+        return $row['username'];
+
+        //$query = sprintf(self::FIND_FULL_NAME, $username);
+        //$stmt = $this->db->prepare($query);
         //$result = $this->pdo->query($query, PDO::FETCH_ASSOC);	
-        $row = $result->fetch();
-        #return $row['fullname'];
-        return false;
+        //$row = $result->fetch();
+        //return $row['fullname'];
+        //return false;
     }
 
     public function findByUser($username)
@@ -124,7 +130,7 @@ class UserRepository
         // These values should be sanitized
         // I believe this is fixed
         $query = (
-            "INSERT INTO users VALUES(:userid, :username, :hash, :email, :fullname, :address, :postcode, :age, :bio, :admin)"
+            "INSERT INTO users VALUES(:userid, :username, :hash, :email, :fullname, :address, :postcode, :age, :bio, :admin, 0, 0, 0, 0)"
         );
         $stmt = $this->pdo->prepare($query);
         
@@ -158,7 +164,7 @@ class UserRepository
         // These values should be sanitized
         // I believe this is fixed
         $query = (
-            "UPDATE users SET email=:email, age=:age, bio=:bio, isadmin=:admin, fullname=:fullname, address=:address, postcode=:postcode, bank_acc_num=;bank_acc_num, is_doctor=:is_doctor WHERE id=:userid"
+            "UPDATE users SET email=:email, age=:age, bio=:bio, is_admin=:admin, full_name=:fullname, address=:address, postcode=:postcode, bank_acc_num=:bank_acc_num, is_doctor=:is_doctor WHERE id=:userid"
         );
         $stmt = $this->pdo->prepare($query);
 
@@ -183,7 +189,7 @@ class UserRepository
         $stmt->bindparam(':bank_acc_num', $bank_acc_num);
         $stmt->bindParam(':is_doctor', $is_doctor);
         $stmt->bindParam(':userid', $userid);
-         
+        
         return $stmt->execute();
     }
 

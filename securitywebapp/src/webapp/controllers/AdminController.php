@@ -87,14 +87,14 @@ class AdminController extends Controller
             $this->app->flash('info', "CSRF-Token wrong. Did not delete post '$postId'.");
             $this->app->redirect('/admin');
         }
-
-        if ( !$this->auth->guest() && $this->auth->isAdmin() && $this->postRepository->deleteByPostid($postId) === 1) {
+        
+        if (!$this->auth->guest() && $this->auth->isAdmin() && $this->postRepository->deleteByPostid($postId) === true) {
             $this->app->flash('info', "Sucessfully deleted '$postId'");
             $this->app->redirect('/admin');
             return;
         }
 
-        $this->app->flash('info', "An error ocurred. Unable to delete user '$username'.");
+        $this->app->flash('info', "An error ocurred. Unable to delete post '$postId'.");
         $this->app->redirect('/admin');
     }
 }

@@ -119,18 +119,18 @@ class UserController extends Controller
 		$bankAccNum = $request->post('bankAccNum');
         $token = $request->post('csrftoken');
 
-        $validation = new EditUserFormValidation($email, $bio, $age, $bankAccNum,$token);
+        $validation = new EditUserFormValidation($email, $bio, $age, $bankAccNum, $token);
 
         if ($validation->isGoodToGo()) 
-		{
-			$user->setBankAccNum($bankAccNum);
+	    {
+	    	$user->setBankAccNum($bankAccNum);
             $user->setEmail(new Email($email));
             $user->setBio($bio);
             $user->setAge(new Age($age));
             $user->setFullname($fullname);
             $user->setAddress($address);
             $user->setPostcode($postcode);
-			
+	    	
             $this->userRepository->save($user);
 
             $this->app->flashNow('info', 'Your profile was successfully saved.');
