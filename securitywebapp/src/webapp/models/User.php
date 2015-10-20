@@ -11,6 +11,7 @@ class User
     protected $address;
     protected $postcode;
     protected $hash;
+    protected $salt;
     protected $email   = null;
     protected $bio     = 'Bio is empty.';
     protected $age;
@@ -21,16 +22,28 @@ class User
     protected $moneySpent;
     protected $isdoctor = 0;
 
-    function __construct($username, $hash, $fullname, $address, $postcode, $moneySpent, $moneyReceived)
+    function __construct($username, $hash, $salt, $fullname, $address, $postcode, $moneySpent, $moneyReceived)
     {
         $this->username = $username;
         $this->hash = $hash;
+        $this->salt = $salt;
         $this->fullname = $fullname;
         $this->address = $address;
         $this->postcode = $postcode;
         $this->moneySpent = $moneySpent;
 		$this->moneyReceived = $moneyReceived;
         
+    }
+
+    public function getSalt()
+    {
+        return $this->salt;
+    }
+
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+        return $this;
     }
 
     // Getters

@@ -17,7 +17,7 @@ class Sql
      */
     static function up()
     {
-        $q1 = "CREATE TABLE users (id INTEGER PRIMARY KEY, user VARCHAR(50), pass VARCHAR(50), email varchar(50) default null, fullname varchar(50), address varchar(50), postcode varchar (4), age varchar(50), bio varhar(50), isadmin INTEGER, bankAccNum VARCHAR(50) default null, moneyReceived INTEGER DEFAULT 0, moneySpent INTEGER DEFAULT 0, isdoctor INTEGER DEFAULT 0);";
+        $q1 = "CREATE TABLE users (id INTEGER PRIMARY KEY, user VARCHAR(50), pass VARCHAR(50), salt VARCHAR(20), email varchar(50) default null, fullname varchar(50), address varchar(50), postcode varchar (4), age varchar(50), bio varhar(50), isadmin INTEGER, bankAccNum VARCHAR(50) default null, moneyReceived INTEGER DEFAULT 0, moneySpent INTEGER DEFAULT 0, isdoctor INTEGER DEFAULT 0);";
         $q6 = "CREATE TABLE posts (postId INTEGER PRIMARY KEY AUTOINCREMENT, author TEXT, title TEXT NOT NULL, content TEXT NOT NULL, date TEXT NOT NULL, FOREIGN KEY(author) REFERENCES users(user));";
         $q7 = "CREATE TABLE comments(commentId INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT NOT NULL, author TEXT NOT NULL, text INTEGER NOT NULL, belongs_to_post INTEGER NOT NULL, FOREIGN KEY(belongs_to_post) REFERENCES posts(postId));";
 
@@ -34,13 +34,18 @@ class Sql
 
     static function insertDummyUsers()
     {
-        $hash1 = Hash::make(bin2hex(openssl_random_pseudo_bytes(10)));
-        $hash2 = Hash::make(bin2hex(openssl_random_pseudo_bytes(10)));
-        $hash3 = Hash::make(bin2hex(openssl_random_pseudo_bytes(10)));
+        $salt1 = Hash::random_salt();
+        $salt2 = Hash::random_salt();
+        $salt3 = Hash::random_salt();
 
-        $q1 = "INSERT INTO users(user, pass, isadmin, fullname, address, postcode, bankAccNum, moneyReceived, moneySpent , isdoctor) VALUES ('admin', '$hash1', 1, 'admin', 'homebase', '9090', NULL, 0, 0, 0)";
-        $q2 = "INSERT INTO users(user, pass, isadmin, fullname, address, postcode, bankAccNum, moneyReceived, moneySpent , isdoctor) VALUES ('bob', '$hash2', 1, 'Robert Green', 'Greenland Grove 9', '2010', 'NO666', 0, 0, 0)";
-        $q3 = "INSERT INTO users(user, pass, isadmin, fullname, address, postcode, bankAccNum, moneyReceived, moneySpent , isdoctor) VALUES ('bjarni', '$hash3', 1, 'Bjarni Torgmund', 'Hummerdale 12', '4120', NULL, 0, 0, 0)";
+
+        $hash1 = Hash::make(bin2hex(openssl_random_pseudo_bytes(10)), $salt1);
+        $hash2 = Hash::make(bin2hex(openssl_random_pseudo_bytes(10)), $salt2);
+        $hash3 = Hash::make(bin2hex(openssl_random_pseudo_bytes(10)), $salt3);
+
+        $q1 = "INSERT INTO users(user, pass, salt, isadmin, fullname, address, postcode, bankAccNum, moneyReceived, moneySpent , isdoctor) VALUES ('admin', '$hash1', $salt1, 1, 'admin', 'homebase', '9090', NULL, 0, 0, 0)";
+        $q2 = "INSERT INTO users(user, pass, salt, isadmin, fullname, address, postcode, bankAccNum, moneyReceived, moneySpent , isdoctor) VALUES ('bob', '$hash2', $salt2, 1, 'Robert Green', 'Greenland Grove 9', '2010', 'NO666', 0, 0, 0)";
+        $q3 = "INSERT INTO users(user, pass, salt, isadmin, fullname, address, postcode, bankAccNum, moneyReceived, moneySpent , isdoctor) VALUES ('bjarni', '$hash3', $salt3, 1, 'Bjarni Torgmund', 'Hummerdale 12', '4120', NULL, 0, 0, 0)";
 
         self::$pdo->exec($q1);
         self::$pdo->exec($q2);

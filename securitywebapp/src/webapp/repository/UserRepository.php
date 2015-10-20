@@ -31,8 +31,10 @@ class UserRepository
 
     public function makeUserFromRow(array $row)
     {
-        $user = new User($row['user'], $row['pass'], $row['fullname'], $row['address'], $row['postcode'], $row['moneySpent'], $row['moneyReceived']);
+        $user = new User($row['user'], $row['pass'], $row['salt'], $row['fullname'], $row['address'], $row['postcode'], $row['moneySpent'], $row['moneyReceived']);
         $user->setUserId($row['id']);
+        $user->setHash($row['pass']);
+        $user->setSalt($row['salt']);
         $user->setFullname($row['fullname']);
         $user->setAddress(($row['address']));
         $user->setPostcode((($row['postcode']))); 
