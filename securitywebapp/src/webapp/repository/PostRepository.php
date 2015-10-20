@@ -35,7 +35,7 @@ class PostRepository
     {
         //VULN: SQL-Injection via postId variable (G21_0018)
         // I believe this is fixed
-        $sql  = "SELECT * FROM posts WHERE postId = :postId";
+        $sql  = "SELECT * FROM posts WHERE post_id = :postId";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':postId', $postId);
         $row = false;
@@ -68,7 +68,7 @@ class PostRepository
     public function makeFromRow($row)
     {
         return static::create(
-            $row['postId'],
+            $row['post_id'],
             $row['author'],
             $row['title'],
             $row['content'],
@@ -82,7 +82,7 @@ class PostRepository
     {
         //VULN: SQL-Injection via postId variable (new Vulnerability)
         // I believe this is fixed
-        $sql = "DELETE FROM posts WHERE postid = :postId";
+        $sql = "DELETE FROM posts WHERE post_id = :postId";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':postId', $postId);
         return $stmt->execute();

@@ -14,7 +14,7 @@ class CommentRepository
     private $db;
 
 	//id input should be parametrized
-    const SELECT_BY_ID = "SELECT * FROM moviereviews WHERE id = %s"; //never used, so should be removed
+    //const SELECT_BY_ID = "SELECT * FROM moviereviews WHERE id = %s"; //never used, so should be removed
 
     public function __construct(PDO $db)
     {

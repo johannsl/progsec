@@ -10,14 +10,14 @@ use tdt4237\webapp\models\User;
 
 class UserRepository
 {
-    const INSERT_QUERY   = "INSERT INTO users(user, pass, email, age, bio, isadmin, fullname, address, postcode) VALUES('%s', '%s', '%s' , '%s' , '%s', '%s', '%s', '%s', '%s')";
-    const UPDATE_QUERY   = "UPDATE users SET email='%s', age='%s', bio='%s', isadmin='%s', fullname ='%s', address = '%s', postcode = '%s', bankAccNum = '%s', isDoctor = '%s' WHERE id='%s'";
+    const INSERT_QUERY   = "INSERT INTO users(user, pass, email, age, bio, is_admin, full_name, address, postcode) VALUES('%s', '%s', '%s' , '%s' , '%s', '%s', '%s', '%s', '%s')";
+    const UPDATE_QUERY   = "UPDATE users SET email='%s', age='%s', bio='%s', is_admin='%s', full_name ='%s', address = '%s', postcode = '%s', bank_acc_num = '%s', is_doctor = '%s' WHERE id='%s'";
     const FIND_BY_NAME   = "SELECT * FROM users WHERE user='%s'";		
     const DELETE_BY_NAME = "DELETE FROM users WHERE user='%s'";
     const SELECT_ALL     = "SELECT * FROM users";
     const FIND_FULL_NAME   = "SELECT * FROM users WHERE user='%s'";
-    const MONEY_PAYMENT   = "UPDATE users SET moneySpent=moneySpent+:amount WHERE user=:sourceUser";
-    const MONEY_PAYMENT_RECEIVED = "UPDATE users SET moneyReceived=moneyReceived+:amount WHERE user=:targetUser";
+    const MONEY_PAYMENT   = "UPDATE users SET money_spent=money_spent+:amount WHERE user=:sourceUser";
+    const MONEY_PAYMENT_RECEIVED = "UPDATE users SET money_received=money_received+:amount WHERE user=:targetUser";
 
     /**
      * @var PDO
@@ -31,15 +31,15 @@ class UserRepository
 
     public function makeUserFromRow(array $row)
     {
-        $user = new User($row['user'], $row['pass'], $row['fullname'], $row['address'], $row['postcode'], $row['moneySpent'], $row['moneyReceived']);
+        $user = new User($row['user'], $row['pass'], $row['fullname'], $row['address'], $row['postcode'], $row['money_spent'], $row['money_received']);
         $user->setUserId($row['id']);
-        $user->setFullname($row['fullname']);
+        $user->setFullname($row['full_name']);
         $user->setAddress(($row['address']));
         $user->setPostcode((($row['postcode']))); 
         $user->setBio($row['bio']);
-        $user->setIsAdmin($row['isadmin']);
-		$user->setBankAccNum($row['bankAccNum']); 
-        $user->setIsDoctor($row['isdoctor']); 
+        $user->setIsAdmin($row['is_admin']);
+		$user->setBankAccNum($row['bank_acc_num']); 
+        $user->setIsDoctor($row['is_doctor']); 
 
         if (!empty($row['email'])) {
             $user->setEmail(new Email($row['email']));
@@ -158,7 +158,7 @@ class UserRepository
         // These values should be sanitized
         // I believe this is fixed
         $query = (
-            "UPDATE users SET email=:email, age=:age, bio=:bio, isadmin=:admin, fullname=:fullname, address=:address, postcode=:postcode WHERE id=:userid"
+            "UPDATE users SET email=:email, age=:age, bio=:bio, isadmin=:admin, fullname=:fullname, address=:address, postcode=:postcode, bank_acc_num=;bank_acc_num, is_doctor=:is_doctor WHERE id=:userid"
         );
         $stmt = $this->pdo->prepare($query);
 
@@ -169,6 +169,8 @@ class UserRepository
         $fullname = $user->getFullname();
         $address = $user->getAddress();
         $postcode = $user->getPostcode();
+        $bank_acc_num = $user->getBankAccNum();
+        $is_doctor = $user->isDoctor();
         $userid = $user->getUserId();
 
         $stmt->bindParam(':email', $email);
@@ -178,6 +180,8 @@ class UserRepository
         $stmt->bindParam(':fullname', $fullname);
         $stmt->bindParam(':address', $address);
         $stmt->bindParam(':postcode', $postcode);
+        $stmt->bindparam(':bank_acc_num', $bank_acc_num);
+        $stmt->bindParam(':is_doctor', $is_doctor);
         $stmt->bindParam(':userid', $userid);
          
         return $stmt->execute();
