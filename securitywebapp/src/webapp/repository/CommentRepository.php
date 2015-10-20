@@ -53,7 +53,10 @@ class CommentRepository
         $stmt->bindParam(':postId', $postId);
         $stmt->execute();
         $rows = $stmt->fetchAll();
-        return array_map([$this, 'makeFromRow'], $rows);
+        return $rows; 
+        
+        // I dont know what this does...
+        //array_map([$this, 'makeFromRow'], $rows);
     }
 
     public function makeFromRow($row)

@@ -94,7 +94,7 @@ $app->get('/logout', $ns . 'UserController:logout')->name('logout');
 
 // Admin restricted area
 $app->get('/admin', $ns . 'AdminController:index')->name('admin');
-$app->get('/admin/delete/post/:postid/:csrftoken', $ns . 'AdminController:deletepost');
+$app->get('/admin/delete/post/:postid/:csrftoken', $ns . 'AdminController:deletePost');
 $app->get('/admin/delete/:username/:csrftoken', $ns . 'AdminController:delete');
 $app->get('/admin/toggledoctor/:username/:isdoctor', $ns . 'AdminController:toggleDoctor');
 
