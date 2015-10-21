@@ -87,6 +87,9 @@ class PostController extends Controller
         if ($this->auth->guest()) {
             $this->app->flash("info", "You must be logged on to create a post");
             $this->app->redirect("/login");
+        } else if ($this->userRepository->findByUser($_SESSION['user'])->isDoctor() == true) {
+            $this->app->flash("info", "Doctors cannot create posts");
+            $this->app->redirect("/posts");
         } else {
             $request = $this->app->request;
             $title = $request->post('title');
