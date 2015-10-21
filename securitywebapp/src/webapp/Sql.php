@@ -44,7 +44,7 @@ class Sql
         $hash3 = Hash::make(bin2hex(openssl_random_pseudo_bytes(10)), $salt3);
 
 		$q1 = "INSERT INTO users(user, pass, salt, is_admin, full_name, address, postcode, bank_acc_num, money_received, money_spent , is_doctor) VALUES ('admin', '$hash1', $salt1,  1, 'admin', 'homebase', '9090', NULL, 0, 0, 0)";
-        $q2 = "INSERT INTO users(user, pass, salt, is_admin, full_name, address, postcode, bank_acc_num, money_received, money_spent , is_doctor) VALUES ('bob', '$hash2', $salt1,  1, 'Robert Green', 'Greenland Grove 9', '2010', 'NO666', 0, 0, 0)";
+        $q2 = "INSERT INTO users(user, pass, salt, is_admin, full_name, address, postcode, bank_acc_num, money_received, money_spent , is_doctor) VALUES ('bob', '$hash2', $salt1,  1, 'Robert Green', 'Greenland Grove 9', '2010', NULL, 0, 0, 0)";
         $q3 = "INSERT INTO users(user, pass, salt, is_admin, full_name, address, postcode, bank_acc_num, money_received, money_spent , is_doctor) VALUES ('bjarni', '$hash3', $salt1,  1, 'Bjarni Torgmund', 'Hummerdale 12', '4120', NULL, 0, 0, 0)";
 		
         self::$pdo->exec($q1);
