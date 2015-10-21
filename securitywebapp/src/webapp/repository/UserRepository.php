@@ -40,7 +40,7 @@ class UserRepository
         $user->setPostcode((($row['postcode']))); 
         $user->setBio($row['bio']);
         $user->setIsAdmin($row['is_admin']);
-	$user->setBankAccNum($row['bank_acc_num']); 
+    	$user->setBankAccNum($row['bank_acc_num']); 
         $user->setIsDoctor($row['is_doctor']); 
 
         if (!empty($row['email'])) {
@@ -123,7 +123,7 @@ class UserRepository
         // These values should be sanitized
         // I believe this is fixed
         $query = (
-            "INSERT INTO users VALUES(:userid, :username, :hash, :salt, :email, :fullname, :address, :postcode, :age, :bio, :admin, 0, 0, 0, 0)"
+            "INSERT INTO users VALUES(:userid, :username, :hash, :salt, :email, :fullname, :address, :postcode, :age, :bio, :admin, NULL, 0, 0, 0)"
         );
         $stmt = $this->pdo->prepare($query);
         
