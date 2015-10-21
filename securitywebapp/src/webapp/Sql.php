@@ -18,7 +18,7 @@ class Sql
     static function up()
     {
         $q1 = "CREATE TABLE users (id INTEGER PRIMARY KEY, user VARCHAR(50), pass VARCHAR(50), salt VARCHAR(20), email varchar(50) default null, full_name varchar(50), address varchar(50), postcode varchar (4), age varchar(50), bio varhar(50), is_admin INTEGER, bank_acc_num VARCHAR(50) default null, money_received INTEGER DEFAULT 0, money_spent INTEGER DEFAULT 0, is_doctor INTEGER DEFAULT 0);";
-        $q6 = "CREATE TABLE posts (post_id INTEGER PRIMARY KEY AUTOINCREMENT, author TEXT, title TEXT NOT NULL, content TEXT NOT NULL, date TEXT NOT NULL, pay INTEGET, answer_by_doctor INTEGER DEFAULT 0, FOREIGN KEY(author) REFERENCES users(user));";
+        $q6 = "CREATE TABLE posts (post_id INTEGER PRIMARY KEY AUTOINCREMENT, author TEXT, title TEXT NOT NULL, content TEXT NOT NULL, date TEXT NOT NULL, pay INTEGER, answer_by_doctor INTEGER DEFAULT 0, FOREIGN KEY(author) REFERENCES users(user));";
         $q7 = "CREATE TABLE comments(comment_id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT NOT NULL, author TEXT NOT NULL, text INTEGER NOT NULL, belongs_to_post INTEGER NOT NULL, FOREIGN KEY(belongs_to_post) REFERENCES posts(post_id));";
 
         self::$pdo->exec($q1);
