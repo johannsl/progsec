@@ -18,16 +18,20 @@ class PostController extends Controller
 
     public function index()
     {
+        if ($this->auth->guest()) {
+            $this->app->flash("info", "You must be logged in to do that");
+            $this->app->redirect("/login");
+        }else{
         $posts = $this->postRepository->all();
 
         $posts->sortByDate();
         $this->render('posts.twig', ['posts' => $posts]);
+        }
     }
 
     public function show($postId)
     {
         if ($this->auth->guest()) {
-            echo $postId;
             $this->app->flash("info", "You must be logged in to do that");
             $this->app->redirect("/login");
         }else{
