@@ -2,20 +2,31 @@
 
 {% block content %}
 
-    <h2>Create post</h2>
+<h2>Create post</h2>
 
+{% if user.isDoctor == 0 %}
     <form action="" method="POST">
         <input type="hidden" name="csrftoken" value= "{{ csrftoken }}"/>
         <div id="flasherror">{{ flash.error|nl2br }}</div>
-
+    
         <label>Title:</label>
-        <input type = "text" name="title"> <br />
-
+        <input type = "text" name="title"><br/>
+    
         <label>Text:</label>
-        <textarea cols="40" rows="10" name="content"></textarea><br />
-
+        <textarea cols="40" rows="10" name="content"></textarea><br/>
+        
+        {% if user.bankAccNum %}
+            <label>Pay 10$ for doctors advice:</label>
+            <input type="checkbox" name="pay" value="1"><br/>
+        {% endif %}
+        
         <label>Author:</label>
-        <input type="text" name="author" readOnly="true" value="{{username}}"> <br />
+        <input type="text" name="author" readOnly="true" value="{{ user.username }}"> <br />
         <input type="submit" name="submit" value="Create post">
     </form>
+
+{% else %}
+   <p>Doctors cannot create posts.</p>
+{% endif %} 
+
 {% endblock %}

@@ -4,7 +4,6 @@ namespace tdt4237\webapp\models;
 
 class User
 {
-
     protected $userId  = null;
     protected $username;
     protected $fullname;
@@ -19,7 +18,6 @@ class User
     protected $isDoctor = 0; 
     protected $moneyReceived;
     protected $moneySpent;
-    protected $isdoctor = 0;
 
     function __construct($username, $hash, $fullname, $address, $postcode, $moneySpent, $moneyReceived)
     {
@@ -30,7 +28,6 @@ class User
         $this->postcode = $postcode;
         $this->moneySpent = $moneySpent;
 		$this->moneyReceived = $moneyReceived;
-        
     }
 
     // Getters
@@ -89,7 +86,6 @@ class User
     public function isDoctor() {
         return $this->isDoctor === '1';
     }
-
 
 	// Setters
     public function setUserId($userId) {
@@ -151,7 +147,4 @@ class User
         $this->isDoctor = $isDoctor;
         return $this;
     }
-	
-
-	
 }

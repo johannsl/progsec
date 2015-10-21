@@ -42,7 +42,7 @@
             </tr>
             {% if (user.isDoctor == 0 and user.bankAccNum|length > 0) or user.moneySpent > 0 %}	        
             <tr>
-	        <th>Money spent (NOK):</th>
+	        <th>Money spent:</th>
             <td>{{ user.moneySpent }}</td>
             </tr>
             {% endif %}

@@ -17,9 +17,9 @@ class Sql
      */
     static function up()
     {
-        $q1 = "CREATE TABLE users (id INTEGER PRIMARY KEY, user VARCHAR(50), pass VARCHAR(50), email varchar(50) default null, fullname varchar(50), address varchar(50), postcode varchar (4), age varchar(50), bio varhar(50), isadmin INTEGER, bankAccNum VARCHAR(50) default null, moneyReceived INTEGER DEFAULT 0, moneySpent INTEGER DEFAULT 0, isdoctor INTEGER DEFAULT 0);";
-        $q6 = "CREATE TABLE posts (postId INTEGER PRIMARY KEY AUTOINCREMENT, author TEXT, title TEXT NOT NULL, content TEXT NOT NULL, answer_by_doctor INTEGER DEFAULT 0 , date TEXT NOT NULL, FOREIGN KEY(author) REFERENCES users(user));";
-        $q7 = "CREATE TABLE comments(commentId INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT NOT NULL, author TEXT NOT NULL, text INTEGER NOT NULL, belongs_to_post INTEGER NOT NULL, FOREIGN KEY(belongs_to_post) REFERENCES posts(postId));";
+        $q1 = "CREATE TABLE users (id INTEGER PRIMARY KEY, user VARCHAR(50), pass VARCHAR(50), email varchar(50) default null, full_name varchar(50), address varchar(50), postcode varchar (4), age varchar(50), bio varhar(50), is_admin INTEGER, bank_acc_num VARCHAR(50) default null, money_received INTEGER DEFAULT 0, money_spent INTEGER DEFAULT 0, is_doctor INTEGER DEFAULT 0);";
+        $q6 = "CREATE TABLE posts (post_id INTEGER PRIMARY KEY AUTOINCREMENT, author TEXT, title TEXT NOT NULL, content TEXT NOT NULL, date TEXT NOT NULL, pay INTEGET, answer_by_doctor INTEGER DEFAULT 0, FOREIGN KEY(author) REFERENCES users(user));";
+        $q7 = "CREATE TABLE comments(comment_id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT NOT NULL, author TEXT NOT NULL, text INTEGER NOT NULL, belongs_to_post INTEGER NOT NULL, FOREIGN KEY(belongs_to_post) REFERENCES posts(post_id));";
 
         self::$pdo->exec($q1);
         self::$pdo->exec($q6);
@@ -38,21 +38,20 @@ class Sql
         $hash2 = Hash::make(bin2hex(openssl_random_pseudo_bytes(10)));
         $hash3 = Hash::make(bin2hex(openssl_random_pseudo_bytes(10)));
 
-        $q1 = "INSERT INTO users(user, pass, isadmin, fullname, address, postcode, bankAccNum, moneyReceived, moneySpent , isdoctor) VALUES ('admin', '$hash1', 1, 'admin', 'homebase', '9090', NULL, 0, 0, 0)";
-        $q2 = "INSERT INTO users(user, pass, isadmin, fullname, address, postcode, bankAccNum, moneyReceived, moneySpent , isdoctor) VALUES ('bob', '$hash2', 1, 'Robert Green', 'Greenland Grove 9', '2010', 'NO666', 0, 0, 0)";
-        $q3 = "INSERT INTO users(user, pass, isadmin, fullname, address, postcode, bankAccNum, moneyReceived, moneySpent , isdoctor) VALUES ('bjarni', '$hash3', 1, 'Bjarni Torgmund', 'Hummerdale 12', '4120', NULL, 0, 0, 0)";
+        $q1 = "INSERT INTO users(user, pass, is_admin, full_name, address, postcode, bank_acc_num, money_received, money_spent , is_doctor) VALUES ('admin', '$hash1', 1, 'admin', 'homebase', '9090', NULL, 0, 0, 0)";
+        $q2 = "INSERT INTO users(user, pass, is_admin, full_name, address, postcode, bank_acc_num, money_received, money_spent , is_doctor) VALUES ('bob', '$hash2', 1, 'Robert Green', 'Greenland Grove 9', '2010', 'NO666', 0, 0, 0)";
+        $q3 = "INSERT INTO users(user, pass, is_admin, full_name, address, postcode, bank_acc_num, money_received, money_spent , is_doctor) VALUES ('bjarni', '$hash3', 1, 'Bjarni Torgmund', 'Hummerdale 12', '4120', NULL, 0, 0, 0)";
 
         self::$pdo->exec($q1);
         self::$pdo->exec($q2);
         self::$pdo->exec($q3);
 
-
         print "[tdt4237] Done inserting dummy users.".PHP_EOL;
     }
 
     static function insertPosts() {
-        $q4 = "INSERT INTO posts(author, date, title, content, answer_by_doctor) VALUES ('bob', '26082015', 'I have a problem', 'I have a generic problem I think its embarrasing to talk about. Someone help?', 1)";
-        $q5 = "INSERT INTO posts(author, date, title, content, answer_by_doctor) VALUES ('bjarni', '26082015', 'I also have a problem', 'I generally fear very much for my health', 0)";
+        $q4 = "INSERT INTO posts(author, date, title, content, pay, answer_by_doctor) VALUES ('bob', '26082015', 'I have a problem', 'I have a generic problem I think its embarrasing to talk about. Someone help?', 1, 1)";
+        $q5 = "INSERT INTO posts(author, date, title, content, pay, answer_by_doctor) VALUES ('bjarni', '26082015', 'I also have a problem', 'I generally fear very much for my health', 0, 0)";
 
         self::$pdo->exec($q4);
         self::$pdo->exec($q5);
@@ -67,7 +66,6 @@ class Sql
         self::$pdo->exec($q2);
         print "[tdt4237] Done inserting comments.".PHP_EOL;
 
-
     }
 
     static function down()
@@ -75,8 +73,6 @@ class Sql
         $q1 = "DROP TABLE users";
         $q4 = "DROP TABLE posts";
         $q5 = "DROP TABLE comments";
-
-
 
         self::$pdo->exec($q1);
         self::$pdo->exec($q4);

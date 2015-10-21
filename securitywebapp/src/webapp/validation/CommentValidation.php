@@ -6,7 +6,6 @@ use tdt4237\webapp\models\Post;
 
 class CommentValidation extends AbstractCsrfProtectedForm {
 
-
     public function __construct($content, $postid, $token) {
         parent::__construct($token);
         return $this->validate($content, $postid);
@@ -36,6 +35,4 @@ class CommentValidation extends AbstractCsrfProtectedForm {
 
         return $this->validationErrors;
     }
-
-
 }

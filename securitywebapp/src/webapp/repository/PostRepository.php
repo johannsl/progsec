@@ -19,7 +19,7 @@ class PostRepository
         $this->db = $db;
     }
     
-    public static function create($id, $author, $title, $content, $answer_by_doctor, $date) //Bad-Practice: Should be private static
+    public static function create($id, $author, $title, $content, $date, $pay, $answerByDoctor) //Bad-Practice: Should be private static
     {
         $post = new Post;
         
@@ -28,21 +28,22 @@ class PostRepository
             ->setAuthor($author)
             ->setTitle($title)
             ->setContent($content)
-            ->setAnswer_by_doctor($answer_by_doctor)
-            ->setDate($date);
+            ->setDate($date)
+            ->setPay($pay)
+            ->setAnswerByDoctor($answerByDoctor);
     }
 
     public function find($postId)
     {
-        $sql  = "SELECT * FROM posts WHERE postId = $postId";
-        $result = $this->db->query($sql); //VULN: SQL-Injection via postId variable (G21_0018)
-        $row = $result->fetch();
-
-        if($row === false) {
+        //VULN: SQL-Injection via postId variable (G21_0018)
+        // I believe this is fixed
+        $sql  = "SELECT * FROM posts WHERE post_id = :postId";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':postId', $postId);
+        $row = false;
+        if(!$stmt->execute() || ($row=$stmt->fetch()) === false) {
             return false;
         }
-
-
         return $this->makeFromRow($row);
     }
 
@@ -69,37 +70,49 @@ class PostRepository
     public function makeFromRow($row)
     {
         return static::create(
-            $row['postId'],
+            $row['post_id'],
             $row['author'],
             $row['title'],
             $row['content'],
-            $row['answer_by_doctor'],
             $row['date']
+            $row['pay']
+            $row['answer_by_doctor'],
         );
-
-       //  $this->db = $db;
     }
 
     public function deleteByPostid($postId)
     {
-        return $this->db->exec(
-            sprintf("DELETE FROM posts WHERE postid='%s';", $postId)); //VULN: SQL-Injection via postId variable (new Vulnerability)
+        //VULN: SQL-Injection via postId variable (new Vulnerability)
+        // I believe this is fixed
+        $sql = "DELETE FROM posts WHERE post_id = :postId";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':postId', $postId);
+        return $stmt->execute();
     }
-
 
     public function save(Post $post)
     {
-        $title   = $post->getTitle();
-        $author = $post->getAuthor();
-        $content = $post->getContent();
-        $date    = $post->getDate();
-
+        //VULN: SQL-Injection via postId variable (G21_0018)
+        // I believe this is fixed
         if ($post->getPostId() === null) {
-            $query = "INSERT INTO posts (title, author, content, date) "
-                . "VALUES ('$title', '$author', '$content', '$date')";
+            $query = "INSERT INTO posts (title, author, content, date, pay) "
+                . "VALUES (:title, :author, :content, :date, :pay)";
+            $stmt = $this->db->prepare($query);
+
+            $title   = $post->getTitle();
+            $author = $post->getAuthor();
+            $content = $post->getContent();
+            $date    = $post->getDate();
+            $pay    = $post->getPay();
+
+            $stmt->bindParam(':title', $title);
+            $stmt->bindParam(':author', $author);
+            $stmt->bindParam(':content', $content);
+            $stmt->bindParam(':date', $date);
+            $stmt->bindParam(':pay', $pay);
+            $stmt->execute();
         }
 
-        $this->db->exec($query);  //VULN: SQL-Injection via postId variable (G21_0018)
         return $this->db->lastInsertId(); //Bad-Practice: No erro check if insertion worked
     }
 }

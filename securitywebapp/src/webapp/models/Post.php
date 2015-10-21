@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Daniel
- * Date: 26.08.2015
- * Time: 01:04
- */
 
 namespace tdt4237\webapp\models;
 
@@ -15,16 +9,9 @@ class Post
     protected $title;
     protected $content;
     protected $date;
-    protected $answer_by_doctor;
+    protected $pay;
+    protected $answerByDoctor;
 
-    public function getAnswer_by_doctor(){
-        return $this->answer_by_doctor;
-    }
-
-    public function setAnswer_by_doctor($answer_by_doctor){
-        $this->answer_by_doctor = $answer_by_doctor;
-        return $this;
-    }
 
     public function getPostId() {
         return $this->postId;
@@ -71,9 +58,23 @@ class Post
         return $this->title;
     }
 
+    public function setPay($pay) {
+        $this->pay = $pay;
+        return $this;
+    }
+    
+    public function getPay() {
+        return $this->pay;
+    }
 
+    public function setAnswerByDoctor($answerByDoctor){
+        $this->answerByDoctor = $answerByDoctor;
+        return $this;
+    }
 
-
+    public function getAnswerByDoctor(){
+        return $this->answerByDoctor;
+    }
 
 
 }
