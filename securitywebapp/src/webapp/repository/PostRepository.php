@@ -74,9 +74,9 @@ class PostRepository
             $row['author'],
             $row['title'],
             $row['content'],
-            $row['date']
-            $row['pay']
-            $row['answer_by_doctor'],
+            $row['date'],
+            $row['pay'],
+            $row['answer_by_doctor']
         );
     }
 

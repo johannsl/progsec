@@ -79,7 +79,7 @@ class PostController extends Controller
                 $author_name = $comment->getAuthor();
                 $author = $this->userRepository->findByUser($author_name);
 
-                if ($author->isDoctor() == 1)
+                if ($author->isDoctor() == true)
                 {
                     $post = $this->postRepository->find($postId);
                     $post->setAnswerByDoctor(1);
