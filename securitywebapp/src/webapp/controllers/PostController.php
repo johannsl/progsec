@@ -84,6 +84,7 @@ class PostController extends Controller
                     $post = $this->postRepository->find($postId);
                     $post->setAnswerByDoctor(1);
                     $this->postRepository->answeredByDoctor($postId);
+					  $this->userRepository->payMoney($post->getAuthor(), $author_name, 10); 
                 }
 
                 $this->app->redirect('/posts/' . $postId); 
