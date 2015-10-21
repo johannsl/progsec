@@ -75,6 +75,17 @@ class PostController extends Controller
                 $comment->setDate(date("dmY"));
                 $comment->setPost($postId);
                 $this->commentRepository->save($comment);
+                
+                $author_name = $comment->getAuthor();
+                $author = $this->userRepository->findByUser($author_name);
+
+                if ($author->isDoctor() == true)
+                {
+                    $post = $this->postRepository->find($postId);
+                    $post->setAnswerByDoctor(1);
+                    $this->postRepository->answeredByDoctor($postId);
+                }
+
                 $this->app->redirect('/posts/' . $postId); 
             } else {
                 $this->app->flash('error', join("\n", $validation->getValidationErrors()));

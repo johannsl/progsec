@@ -7,19 +7,29 @@
 
     {% for post in posts %}
         {% if user.isDoctor == 0 %}
-            <div class="post">
-                <a href="/posts/{{ post.postId }}">{{ post.title}}</a> by  <a href="/user/{{ post.author }}"> {{ post.author }}</a>. Posted on {{ post.date }}
-            </div>
+		    {% if post.answerByDoctor == 1 %}
+                <div class="post">
+                    <a href="/posts/{{ post.postId }}">{{ post.title}}</a> by  <a href="/user/{{ post.author }}"> {{ post.author }}</a>. Posted on {{ post.date }} <font color="green"> ANSWERED!</font>
+                </div>
+		    {% else %}
+                <div class="post">
+	                <a href="/posts/{{ post.postId }}">{{ post.title}}</a> by  <a href="/user/{{ post.author }}"> {{ post.author }}</a>. Posted on {{ post.date }}
+	            </div>
+	    	{% endif %}
         {% else %}
             {% if post.pay %}
-                <div class="post">
-                    <a href="/posts/{{ post.postId }}">{{ post.title}}</a> by  <a href="/user/{{ post.author }}"> {{ post.author }}</a>. Posted on {{ post.date }}
-                </div>
+                {% if post.answerByDoctor == 1 %}
+            	    <div class="post">
+                	    <a href="/posts/{{ post.postId }}">{{ post.title}}</a> by  <a href="/user/{{ post.author }}"> {{ post.author }}</a>. Posted on {{ post.date }} <font color="green"> ANSWERED!</font>
+            		</div>
+		        {% else %}
+	   		        <div class="post">
+	                    <a href="/posts/{{ post.postId }}">{{ post.title}}</a> by  <a href="/user/{{ post.author }}"> {{ post.author }}</a>. Posted on {{ post.date }}
+	                </div>
+	    	    {% endif %}
             {% endif %}
         {% endif %}
-
     {% else %}
         There are no posts as of yet
     {% endfor %}
-
 {% endblock %}

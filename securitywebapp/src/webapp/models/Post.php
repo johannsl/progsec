@@ -10,6 +10,8 @@ class Post
     protected $content;
     protected $date;
     protected $pay;
+    protected $answerByDoctor;
+
 
     public function getPostId() {
         return $this->postId;
@@ -64,4 +66,15 @@ class Post
     public function getPay() {
         return $this->pay;
     }
+
+    public function setAnswerByDoctor($answerByDoctor){
+        $this->answerByDoctor = $answerByDoctor;
+        return $this;
+    }
+
+    public function getAnswerByDoctor(){
+        return $this->answerByDoctor;
+    }
+
+
 }

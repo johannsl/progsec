@@ -19,7 +19,7 @@ class PostRepository
         $this->db = $db;
     }
     
-    public static function create($id, $author, $title, $content, $date, $pay) //Bad-Practice: Should be private static
+    public static function create($id, $author, $title, $content, $date, $pay, $answerByDoctor) //Bad-Practice: Should be private static
     {
         $post = new Post;
         
@@ -29,7 +29,8 @@ class PostRepository
             ->setTitle($title)
             ->setContent($content)
             ->setDate($date)
-            ->setPay($pay);
+            ->setPay($pay)
+            ->setAnswerByDoctor($answerByDoctor);
     }
 
     public function find($postId)
@@ -74,7 +75,8 @@ class PostRepository
             $row['title'],
             $row['content'],
             $row['date'],
-            $row['pay']
+            $row['pay'],
+            $row['answer_by_doctor']
         );
     }
 
@@ -112,5 +114,12 @@ class PostRepository
         }
 
         return $this->db->lastInsertId(); //Bad-Practice: No erro check if insertion worked
+    }
+
+    public function answeredByDoctor($postId) {
+        $query = "UPDATE posts SET answer_by_doctor=1 WHERE post_id=:post_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':post_id', $postId);
+        return $stmt->execute();
     }
 }
