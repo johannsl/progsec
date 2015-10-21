@@ -10,13 +10,8 @@ use tdt4237\webapp\models\User;
 
 class UserRepository
 {
-<<<<<<< HEAD
-    const INSERT_QUERY   = "INSERT INTO users(user, pass, salt, email, age, bio, isadmin, fullname, address, postcode) VALUES('%s', '%s', '%s' , '%s', '%s' , '%s', '%s', '%s', '%s', '%s')";
-    const UPDATE_QUERY   = "UPDATE users SET email='%s', age='%s', bio='%s', isadmin='%s', fullname ='%s', address = '%s', postcode = '%s', bankAccNum = '%s', isDoctor = '%s' WHERE id='%s'";
-=======
-    const INSERT_QUERY   = "INSERT INTO users(user, pass, email, age, bio, is_admin, full_name, address, postcode) VALUES('%s', '%s', '%s' , '%s' , '%s', '%s', '%s', '%s', '%s')";
+    const INSERT_QUERY   = "INSERT INTO users(user, pass, salt, email, age, bio, is_admin, full_name, address, postcode) VALUES('%s', '%s', '%s' , '%s' , '%s', '%s', '%s', '%s', '%s')";
     const UPDATE_QUERY   = "UPDATE users SET email='%s', age='%s', bio='%s', is_admin='%s', full_name ='%s', address = '%s', postcode = '%s', bank_acc_num = '%s', is_doctor = '%s' WHERE id='%s'";
->>>>>>> master
     const FIND_BY_NAME   = "SELECT * FROM users WHERE user='%s'";		
     const DELETE_BY_NAME = "DELETE FROM users WHERE user='%s'";
     const SELECT_ALL     = "SELECT * FROM users";
@@ -36,22 +31,16 @@ class UserRepository
 
     public function makeUserFromRow(array $row)
     {
-<<<<<<< HEAD
-        $user = new User($row['user'], $row['pass'], $row['salt'], $row['fullname'], $row['address'], $row['postcode'], $row['moneySpent'], $row['moneyReceived']);
+        $user = new User($row['user'], $row['pass'], $row['salt'], $row['full_name'], $row['address'], $row['postcode'], $row['money_spent'], $row['money_received']);
         $user->setUserId($row['id']);
         $user->setHash($row['pass']);
         $user->setSalt($row['salt']);
-        $user->setFullname($row['fullname']);
-=======
-        $user = new User($row['user'], $row['pass'], $row['full_name'], $row['address'], $row['postcode'], $row['money_spent'], $row['money_received']);
-        $user->setUserId($row['id']);
         $user->setFullname($row['full_name']);
->>>>>>> master
         $user->setAddress(($row['address']));
         $user->setPostcode((($row['postcode']))); 
         $user->setBio($row['bio']);
         $user->setIsAdmin($row['is_admin']);
-		$user->setBankAccNum($row['bank_acc_num']); 
+	$user->setBankAccNum($row['bank_acc_num']); 
         $user->setIsDoctor($row['is_doctor']); 
 
         if (!empty($row['email'])) {
@@ -77,30 +66,20 @@ class UserRepository
             return false;
         }
 
-        return $row['username'];
-
-        //$query = sprintf(self::FIND_FULL_NAME, $username);
-        //$stmt = $this->db->prepare($query);
-        //$result = $this->pdo->query($query, PDO::FETCH_ASSOC);	
-        //$row = $result->fetch();
-        //return $row['fullname'];
-        //return false;
     }
 
     public function findByUser($username)
     {
-        // username should be filtered
-        // I believe this is fixed
-        $query = "SELECT * FROM users WHERE user = :username";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':username', $username);
-        $row = false;
-        if(!$stmt->execute() || ($row=$stmt->fetch()) === false) {
+        $query  = sprintf(self::FIND_BY_NAME, $username);			#username should be filtered
+        $result = $this->pdo->query($query, PDO::FETCH_ASSOC);		
+        $row = $result->fetch();
+        
+        if ($row === false) {
             return false;
         }
 
-        return $this->makeUserFromRow($row);
 
+        return $this->makeUserFromRow($row);
     }
 
     public function deleteByUsername($username)
@@ -115,6 +94,8 @@ class UserRepository
             return 1;
         }
     }
+
+
 
     public function all()
     {
@@ -139,31 +120,17 @@ class UserRepository
 
     public function saveNewUser(User $user)
     {
-<<<<<<< HEAD
-        $query = sprintf(
-            self::INSERT_QUERY, $user->getUsername(), $user->getHash(), $user->getSalt(), $user->getEmail(), $user->getAge(), $user->getBio(), $user->isAdmin(), $user->getFullname(), $user->getAddress(), $user->getPostcode()
-        );		#these values should also be sanitized
-		
-		if($query) 
-		{ 
-			return $this->pdo->exec($query);
-		} 
-		else 
-		{
-			$error = $this->pdo->errno . ' ' . $this->pdo->error;
-			echo $error; 
-		}
-=======
         // These values should be sanitized
         // I believe this is fixed
         $query = (
-            "INSERT INTO users VALUES(:userid, :username, :hash, :email, :fullname, :address, :postcode, :age, :bio, :admin, 0, 0, 0, 0)"
+            "INSERT INTO users VALUES(:userid, :username, :hash, :salt, :email, :fullname, :address, :postcode, :age, :bio, :admin, 0, 0, 0, 0)"
         );
         $stmt = $this->pdo->prepare($query);
         
         $userid = $user->getUserId();
         $username = $user->getUsername();
         $hash = $user->getHash();
+	$salt = $user->getSalt();
         $email = $user->getEmail();
         $age = $user->getAge();
         $bio = $user->getBio();
@@ -175,6 +142,7 @@ class UserRepository
         $stmt->bindParam(':userid', $userid);
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':hash', $hash);
+		$stmt->bindParam(':salt', $salt);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':age', $age);
         $stmt->bindParam(':bio', $bio);
@@ -184,7 +152,6 @@ class UserRepository
         $stmt->bindParam(':postcode', $postcode);
 
         return $stmt->execute();
->>>>>>> master
     }
 
     public function saveExistingUser(User $user)
@@ -239,4 +206,6 @@ class UserRepository
 	$statement->execute(array(':amount' => $amount_of_money-3, ':targetUser' => $targetUser->getUsername()));
     return true;
     }
+	
+		
 }
