@@ -50,7 +50,12 @@ class AdminController extends Controller
         $this->app->redirect('/admin');
     }
 
-    public function toggleDoctor($username, $isdoctor) {
+    public function toggleDoctor($username, $isdoctor, $csrftoken) {
+        if($csrftoken != $_SESSION['csrftoken']) {
+            $this->app->flash('info', "CSRF-Token wrong. Did not toggle doctor for user '$username' .");
+            $this->app->redirect('/admin');
+            return;
+        }
 
         if($this->auth->guest() || !$this->auth->isAdmin()) {
             $this->app->flash('info', "You must be administrator to view the admin page.");
@@ -73,9 +78,9 @@ class AdminController extends Controller
 
         $targetUser->setIsDoctor($isdoctor);
         $this->userRepository->save($targetUser);
-         $this->app->flash('info', "'$username' was successfully " . (($isdoctor) == 0 ? "un" : "") . "set as doctor");
-         $this->app->redirect('/admin');
-         return;
+        $this->app->flash('info', "'$username' was successfully " . (($isdoctor) == 0 ? "un" : "") . "set as doctor");
+        $this->app->redirect('/admin');
+        return;
     }
 
 	// there should be check if $this->auth->isAdmin() before deleting
@@ -86,14 +91,14 @@ class AdminController extends Controller
             $this->app->flash('info', "CSRF-Token wrong. Did not delete post '$postId'.");
             $this->app->redirect('/admin');
         }
-
-        if ( !$this->auth->guest() && $this->auth->isAdmin() && $this->postRepository->deleteByPostid($postId) === 1) {
+        
+        if (!$this->auth->guest() && $this->auth->isAdmin() && $this->postRepository->deleteByPostid($postId) === true) {
             $this->app->flash('info', "Sucessfully deleted '$postId'");
             $this->app->redirect('/admin');
             return;
         }
 
-        $this->app->flash('info', "An error ocurred. Unable to delete user '$username'.");
+        $this->app->flash('info', "An error ocurred. Unable to delete post '$postId'.");
         $this->app->redirect('/admin');
     }
 }

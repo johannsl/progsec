@@ -18,11 +18,16 @@ class PostController extends Controller
 
     public function index()
     {
-        $posts = $this->postRepository->all();
-        $posts->sortByDate();
-        $username = $_SESSION['user'];
-        $user = $this->userRepository->findByUser($username);
-        $this->render('posts.twig', ['posts' => $posts, 'user' => $user]);
+        if ($this->auth->guest()) {
+            $this->app->flash("info", "You must be logged in to do that");
+            $this->app->redirect("/login");
+        }else{
+            $posts = $this->postRepository->all();
+            $posts->sortByDate();
+            $username = $_SESSION['user'];
+            $user = $this->userRepository->findByUser($username);
+            $this->render('posts.twig', ['posts' => $posts, 'user' => $user]);
+        }
     }
 
     public function show($postId)
@@ -43,6 +48,12 @@ class PostController extends Controller
                 'comments' => $comments,
             ]);
         }
+        //$this->render('showpost.twig', [
+        //    'post' => $post,
+        //    'comments' => $comments,
+        //    'flash' => $variables
+        //]);
+
     }
 
     public function addComment($postId)
