@@ -7,7 +7,6 @@ use tdt4237\webapp\models\Comment;
 
 class CommentRepository
 {
-	
     /**
      * @var PDO
      */
@@ -18,7 +17,6 @@ class CommentRepository
 
     public function __construct(PDO $db)
     {
-
         $this->db = $db;
     }
 
