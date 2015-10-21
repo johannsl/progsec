@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Daniel
- * Date: 26.08.2015
- * Time: 01:04
- */
 
 namespace tdt4237\webapp\models;
 
@@ -63,10 +57,5 @@ class Comment
         return $this;
 
     }
-
-
-
-
-
 
 }

@@ -2,12 +2,22 @@
 
 {% block content %}
 
+
     <h2>Posts</h2>
 
     {% for post in posts %}
-        <div class="post">
-            <a href="/posts/{{ post.postId }}">{{ post.title}}</a> by  <a href="/user/{{ post.author }}"> {{ post.author }}</a>. Posted on {{ post.date }}
-        </div>
+        {% if user.isDoctor == 0 %}
+            <div class="post">
+                <a href="/posts/{{ post.postId }}">{{ post.title}}</a> by  <a href="/user/{{ post.author }}"> {{ post.author }}</a>. Posted on {{ post.date }}
+            </div>
+        {% else %}
+            {% if post.pay %}
+                <div class="post">
+                    <a href="/posts/{{ post.postId }}">{{ post.title}}</a> by  <a href="/user/{{ post.author }}"> {{ post.author }}</a>. Posted on {{ post.date }}
+                </div>
+            {% endif %}
+        {% endif %}
+
     {% else %}
         There are no posts as of yet
     {% endfor %}

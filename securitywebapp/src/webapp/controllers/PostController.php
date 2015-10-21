@@ -16,13 +16,18 @@ class PostController extends Controller
         parent::__construct();
     }
 
-
     public function index()
     {
-        $posts = $this->postRepository->all();
-
-        $posts->sortByDate();
-        $this->render('posts.twig', ['posts' => $posts]);
+        if ($this->auth->guest()) {
+            $this->app->flash("info", "You must be logged in to do that");
+            $this->app->redirect("/login");
+        }else{
+            $posts = $this->postRepository->all();
+            $posts->sortByDate();
+            $username = $_SESSION['user'];
+            $user = $this->userRepository->findByUser($username);
+            $this->render('posts.twig', ['posts' => $posts, 'user' => $user]);
+        }
     }
 
     public function show($postId)
@@ -30,7 +35,14 @@ class PostController extends Controller
         if ($this->auth->guest()) {
             $this->app->flash("info", "You must be logged in to do that");
             $this->app->redirect("/login");
-        }else{
+        } 
+        else if (($this->postRepository->find($postId))
+        && ($this->userRepository->findByUser($_SESSION['user'])->isDoctor() == true)
+        && ($this->postRepository->find($postId)->getPay() == 0))
+        {
+            $this->app->flash("info", "Doctors cannot view unfunded posts");
+            $this->app->redirect("/posts");
+        } else {
             $post = $this->postRepository->find($postId);
             $comments = $this->commentRepository->findByPostId($postId);
             $request = $this->app->request;
@@ -40,11 +52,18 @@ class PostController extends Controller
                 'comments' => $comments,
             ]);
         }
+
+        // What is this I dont even.
+        //$this->render('showpost.twig', [
+        //    'post' => $post,
+        //    'comments' => $comments,
+        //    'flash' => $variables
+        //]);
+
     }
 
     public function addComment($postId)
     {
-
         if(!$this->auth->guest()) {
             //now we save the comment with checking :-)
             $request = $this->app->request;
@@ -74,9 +93,9 @@ class PostController extends Controller
 
         if ($this->auth->check()) {
             $username = $_SESSION['user'];
-            $this->render('createpost.twig', ['username' => $username]);
+            $user = $this->userRepository->findByUser($username);
+            $this->render('createpost.twig', ['user' => $user]);
         } else {
-
             $this->app->flash('error', "You need to be logged in to create a post");
             $this->app->redirect("/");
         }
@@ -88,10 +107,14 @@ class PostController extends Controller
         if ($this->auth->guest()) {
             $this->app->flash("info", "You must be logged on to create a post");
             $this->app->redirect("/login");
+        } else if ($this->userRepository->findByUser($_SESSION['user'])->isDoctor() == true) {
+            $this->app->flash("info", "Doctors cannot create posts");
+            $this->app->redirect("/posts");
         } else {
             $request = $this->app->request;
             $title = $request->post('title');
             $content = $request->post('content');
+            $pay = $request->post('pay');
             $author = $_SESSION['user'];
             $date = date("dmY");
             $validation = new PostValidation($author, $title, $content, $request->post('csrftoken'));
@@ -101,15 +124,16 @@ class PostController extends Controller
                 $post->setTitle($title);
                 $post->setContent($content);
                 $post->setDate($date);
+                $post->setPay($pay);
                 $savedPost = $this->postRepository->save($post);
                 $this->app->flash('info', 'Post succesfully posted');
                 $this->app->redirect('/posts/' . $savedPost);
             }
         }
-
+            // Does this ever occur?
             $this->app->flashNow('error', join("\n", $validation->getValidationErrors()));
-            $this->render('createpost.twig', ['username' => $_SESSION['user']]);
-            // RENDER HERE
-
+            $username = $_SESSION['user'];
+            $user = $this->userRepository->findByUser($username);
+            $this->render('createpost.twig', ['user' => $user]);
     }
 }

@@ -84,10 +84,8 @@ class Auth
 
     public function logout()
     {
-        //if($this->guest()) {
-            unset($_SESSION['user']);
-            session_destroy(); // This is not a safe logout. G21_0003
-        //}
+        unset($_SESSION['user']);
+        session_destroy(); // This is not a safe logout. G21_0003
     }
 
     /*

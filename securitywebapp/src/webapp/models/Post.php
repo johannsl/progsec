@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Daniel
- * Date: 26.08.2015
- * Time: 01:04
- */
 
 namespace tdt4237\webapp\models;
 
@@ -15,11 +9,10 @@ class Post
     protected $title;
     protected $content;
     protected $date;
-
+    protected $pay;
 
     public function getPostId() {
         return $this->postId;
-
     }
 
     public function setPostId($postId) {
@@ -63,9 +56,12 @@ class Post
         return $this->title;
     }
 
-
-
-
-
-
+    public function setPay($pay) {
+        $this->pay = $pay;
+        return $this;
+    }
+    
+    public function getPay() {
+        return $this->pay;
+    }
 }
