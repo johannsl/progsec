@@ -35,7 +35,11 @@ class PostController extends Controller
         if ($this->auth->guest()) {
             $this->app->flash("info", "You must be logged in to do that");
             $this->app->redirect("/login");
-        } else if ($this->postRepository->find($postId) && $this->userRepository->findByUser($_SESSION['user'])->isDoctor() == true) {
+        } 
+        else if (($this->postRepository->find($postId))
+        && ($this->userRepository->findByUser($_SESSION['user'])->isDoctor() == true)
+        && ($this->postRepository->find($postId)->getPay() == 0))
+        {
             $this->app->flash("info", "Doctors cannot view unfunded posts");
             $this->app->redirect("/posts");
         } else {
@@ -48,6 +52,8 @@ class PostController extends Controller
                 'comments' => $comments,
             ]);
         }
+
+        // What is this I dont even.
         //$this->render('showpost.twig', [
         //    'post' => $post,
         //    'comments' => $comments,
