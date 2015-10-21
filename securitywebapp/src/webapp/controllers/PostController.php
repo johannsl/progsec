@@ -30,7 +30,10 @@ class PostController extends Controller
         if ($this->auth->guest()) {
             $this->app->flash("info", "You must be logged in to do that");
             $this->app->redirect("/login");
-        }else{
+        } else if ($this->postRepository->find($postId) && $this->userRepository->findByUser($_SESSION['user'])->isDoctor() == true) {
+            $this->app->flash("info", "Doctors cannot view unfunded posts");
+            $this->app->redirect("/posts");
+        } else {
             $post = $this->postRepository->find($postId);
             $comments = $this->commentRepository->findByPostId($postId);
             $request = $this->app->request;
