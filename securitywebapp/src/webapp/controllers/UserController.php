@@ -50,8 +50,9 @@ class UserController extends Controller
             $this->render('newUserForm.twig');
         }else if ($validation->isGoodToGo()) {
             $password = $password;
-            $password = $this->hash->make($password);
-            $user = new User($username, $password, $fullname, $address, $postcode, 0, 0);
+            $salt = $this->hash->random_salt();
+            $password = $this->hash->make($password, $salt);
+            $user = new User($username, $password, $salt, $fullname, $address, $postcode, 0, 0);
             $this->userRepository->save($user);
 
             $this->app->flash('info', 'Thanks for creating a user. Now log in.');
