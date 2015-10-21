@@ -56,7 +56,6 @@ class UserRepository
     {
         // username should be filtered	
         // I believe this is fixed
-        echo $username;
         $query = "SELECT full_name FROM users WHERE user = :username";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':username', $username);
