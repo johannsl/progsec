@@ -115,4 +115,11 @@ class PostRepository
 
         return $this->db->lastInsertId(); //Bad-Practice: No erro check if insertion worked
     }
+
+    public function answeredByDoctor($postId) {
+        $query = "UPDATE posts SET answer_by_doctor=1 WHERE post_id=:post_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':post_id', $postId);
+        return $stmt->execute();
+    }
 }
