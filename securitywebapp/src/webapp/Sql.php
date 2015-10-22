@@ -18,7 +18,7 @@ class Sql
     static function up()
     {
         $q1 = "CREATE TABLE users (id INTEGER PRIMARY KEY, user VARCHAR(50), pass VARCHAR(50), salt VARCHAR(20), email varchar(50) default null, full_name varchar(50), address varchar(50), postcode varchar (4), age varchar(50), bio varhar(50), is_admin INTEGER, bank_acc_num VARCHAR(50) default null, money_received INTEGER DEFAULT 0, money_spent INTEGER DEFAULT 0, is_doctor INTEGER DEFAULT 0);";
-        $q6 = "CREATE TABLE posts (post_id INTEGER PRIMARY KEY AUTOINCREMENT, author TEXT, title TEXT NOT NULL, content TEXT NOT NULL, date TEXT NOT NULL, pay INTEGER, answer_by_doctor INTEGER DEFAULT 0, FOREIGN KEY(author) REFERENCES users(user));";
+        $q6 = "CREATE TABLE posts (post_id INTEGER PRIMARY KEY AUTOINCREMENT, author TEXT, title TEXT NOT NULL, content TEXT NOT NULL, date TEXT NOT NULL, pay INTEGER, answer_by_doctor INTEGER DEFAULT 0, lock_user varchar(50), lock_tstamp DATE, FOREIGN KEY(author) REFERENCES users(user));"; #lock_user should be foreign key?
         $q7 = "CREATE TABLE comments(comment_id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT NOT NULL, author TEXT NOT NULL, text INTEGER NOT NULL, belongs_to_post INTEGER NOT NULL, FOREIGN KEY(belongs_to_post) REFERENCES posts(post_id));";
 
         self::$pdo->exec($q1);
@@ -60,8 +60,8 @@ class Sql
     }
 
     static function insertPosts() {
-        $q4 = "INSERT INTO posts(author, date, title, content, pay, answer_by_doctor) VALUES ('bob', '26082015', 'I have a problem', 'I have a generic problem I think its embarrasing to talk about. Someone help?', 1, 1)";
-        $q5 = "INSERT INTO posts(author, date, title, content, pay, answer_by_doctor) VALUES ('bjarni', '26082015', 'I also have a problem', 'I generally fear very much for my health', 0, 0)";
+        $q4 = "INSERT INTO posts(author, date, title, content, pay, answer_by_doctor, lock_user, lock_tstamp) VALUES ('bob', '26082015', 'I have a problem', 'I have a generic problem I think its embarrasing to talk about. Someone help?', 1, 1, '', 0)";
+        $q5 = "INSERT INTO posts(author, date, title, content, pay, answer_by_doctor, lock_user, lock_tstamp) VALUES ('bjarni', '26082015', 'I also have a problem', 'I generally fear very much for my health', 0, 0, '', 0)";
 
         self::$pdo->exec($q4);
         self::$pdo->exec($q5);

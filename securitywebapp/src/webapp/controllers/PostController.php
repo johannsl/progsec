@@ -32,24 +32,48 @@ class PostController extends Controller
 
     public function show($postId)
     {
-        if ($this->auth->guest()) {
+        $user = $this->userRepository->findByUser($_SESSION['user']);
+        $post = $this->postRepository->find($postId);
+        if ($this->auth->guest() || $user == false) {
             $this->app->flash("info", "You must be logged in to do that");
             $this->app->redirect("/login");
         } 
-        else if (($this->postRepository->find($postId))
-        && ($this->userRepository->findByUser($_SESSION['user'])->isDoctor() == true)
-        && ($this->postRepository->find($postId)->getPay() == 0))
-        {
-            $this->app->flash("info", "Doctors cannot view unfunded posts");
-            $this->app->redirect("/posts");
+        elseif (($this->postRepository->find($postId)) && ($user->isDoctor() == true)) {
+            if ($post->getPay() == 0) {
+                $this->app->flash("info", "Doctors cannot view unfunded posts");
+                $this->app->redirect("/posts");
+            } else if ($post->getAnswerByDoctor()) {
+                   $comments = $this->commentRepository->findByPostId($postId);
+                    $request = $this->app->request;
+
+                    $this->render('showpost.twig', [
+                     'post' => $post,
+                     'comments' => $comments,
+                      'user' => $user,
+                     ]);
+            }
+            else {
+                if (!$post->getAnswerByDoctor() && $this->postRepository->acquireLock($postId, $_SESSION['user'])) {
+                    $comments = $this->commentRepository->findByPostId($postId);
+                    $request = $this->app->request;
+
+                    $this->render('showpost.twig', [
+                        'post' => $post,
+                        'comments' => $comments,
+                        ]);
+                } else {
+                    $this->app->flash("info", "There is already a doctor working on this post");
+                    $this->app->redirect("/posts");
+                }
+            }
         } else {
-            $post = $this->postRepository->find($postId);
             $comments = $this->commentRepository->findByPostId($postId);
             $request = $this->app->request;
 
             $this->render('showpost.twig', [
                 'post' => $post,
                 'comments' => $comments,
+                'user' => $user,
             ]);
         }
 
@@ -69,23 +93,37 @@ class PostController extends Controller
             $request = $this->app->request;
             $validation = new CommentValidation($request->post("text"), $postId, $request->post("csrftoken"));
             if ($validation->isGoodToGo()) {
+                
+                
+                $author_name = $_SESSION['user'];
+                $author = $this->userRepository->findByUser($author_name);
+
+                if ($author->isDoctor() == true)
+                {
+
+                   
+                    $post = $this->postRepository->find($postId);
+                    if ($post->getAnswerByDoctor() == 0)
+                    {
+                        if(!$this->postRepository->acquireLock($postId, $_SESSION['user'])) {
+                            $this->app->flash("info", "The post is now locked by another doctor and therefore cannot be saved");
+                            $this->app->redirect("/posts/" . $postId);
+                        }
+                        $post->setAnswerByDoctor(1);
+                        $this->postRepository->answeredByDoctor($postId);
+					    $this->userRepository->payMoney($post->getAuthor(), $author_name, 10); 
+                        $this->postRepository->releaseLock($postId, $_SESSION['user']);
+                    } else {
+                        $this->app->flash("info", "The post was already answered by another doctor and therefore you did not get a payment for your answer");
+                        
+                    }
+                }
                 $comment = new Comment($request->post("text"));
                 $comment->setAuthor($_SESSION['user']);
                 $comment->setText($this->app->request->post("text"));
                 $comment->setDate(date("dmY"));
                 $comment->setPost($postId);
                 $this->commentRepository->save($comment);
-                
-                $author_name = $comment->getAuthor();
-                $author = $this->userRepository->findByUser($author_name);
-
-                if ($author->isDoctor() == true)
-                {
-                    $post = $this->postRepository->find($postId);
-                    $post->setAnswerByDoctor(1);
-                    $this->postRepository->answeredByDoctor($postId);
-					  $this->userRepository->payMoney($post->getAuthor(), $author_name, 10); 
-                }
 
                 $this->app->redirect('/posts/' . $postId); 
             } else {
