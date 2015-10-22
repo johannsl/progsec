@@ -39,12 +39,9 @@ class UserController extends Controller
         $address = $request->post('address');
         $postcode = $request->post('postcode');
 		
-        // possibly bank account here, but we agreed not to
-
         $validation = new RegistrationFormValidation($username, $password, $fullname, $address, $postcode, $request->post('csrftoken'));
 
-        $user = $this->app->userRepository->getNameByUsername($username);
-        if(strlen($user) > 0)
+        if ($this->app->userRepository->findByUser($username))
         {
             $this->app->flashNow('error', 'username taken');   
             $this->render('newUserForm.twig');
