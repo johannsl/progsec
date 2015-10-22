@@ -32,18 +32,31 @@ class PostController extends Controller
 
     public function show($postId)
     {
-        if ($this->auth->guest()) {
+        $user = $this->userRepository->findByUser($_SESSION['user']);
+        $post = $this->postRepository->find($postId);
+        if ($this->auth->guest() || $user == false) {
             $this->app->flash("info", "You must be logged in to do that");
             $this->app->redirect("/login");
         } 
-        else if (($this->postRepository->find($postId))
-        && ($this->userRepository->findByUser($_SESSION['user'])->isDoctor() == true)
-        && ($this->postRepository->find($postId)->getPay() == 0))
-        {
-            $this->app->flash("info", "Doctors cannot view unfunded posts");
-            $this->app->redirect("/posts");
+        elseif (($this->postRepository->find($postId)) && ($user->isDoctor() == true)) {
+            if ($post->getPay() == 0) {
+                $this->app->flash("info", "Doctors cannot view unfunded posts");
+                $this->app->redirect("/posts");
+            } else {
+                if ($this->postRepository->acquireLock($postId, $_SESSION['user'])) {
+                    $comments = $this->commentRepository->findByPostId($postId);
+                    $request = $this->app->request;
+
+                    $this->render('showpost.twig', [
+                        'post' => $post,
+                        'comments' => $comments,
+                        ]);
+                } else {
+                    $this->app->flash("info", "There is already a doctor working on this post");
+                    $this->app->redirect("/posts");
+                }
+            }
         } else {
-            $post = $this->postRepository->find($postId);
             $comments = $this->commentRepository->findByPostId($postId);
             $request = $this->app->request;
 
@@ -82,9 +95,12 @@ class PostController extends Controller
                 if ($author->isDoctor() == true)
                 {
                     $post = $this->postRepository->find($postId);
-                    $post->setAnswerByDoctor(1);
-                    $this->postRepository->answeredByDoctor($postId);
-					  $this->userRepository->payMoney($post->getAuthor(), $author_name, 10); 
+                    if ($post->getAnswerByDoctor() == 0)
+                    {
+                        $post->setAnswerByDoctor(1);
+                        $this->postRepository->answeredByDoctor($postId);
+					    $this->userRepository->payMoney($post->getAuthor(), $author_name, 10); 
+                    }
                 }
 
                 $this->app->redirect('/posts/' . $postId); 
