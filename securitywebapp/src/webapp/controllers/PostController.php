@@ -42,8 +42,18 @@ class PostController extends Controller
             if ($post->getPay() == 0) {
                 $this->app->flash("info", "Doctors cannot view unfunded posts");
                 $this->app->redirect("/posts");
-            } else {
-                if ($this->postRepository->acquireLock($postId, $_SESSION['user'])) {
+            } else if ($post->getAnswerByDoctor()) {
+                   $comments = $this->commentRepository->findByPostId($postId);
+                    $request = $this->app->request;
+
+                    $this->render('showpost.twig', [
+                     'post' => $post,
+                     'comments' => $comments,
+                      'user' => $user,
+                     ]);
+            }
+            else {
+                if (!$post->getAnswerByDoctor() && $this->postRepository->acquireLock($postId, $_SESSION['user'])) {
                     $comments = $this->commentRepository->findByPostId($postId);
                     $request = $this->app->request;
 
@@ -91,16 +101,18 @@ class PostController extends Controller
                 if ($author->isDoctor() == true)
                 {
 
-                    if(!$this->postRepository->acquireLock($postId, $_SESSION['user'])) {
-                        $this->app->flash("info", "The post is now locked by another doctor and therefore cannot be saved");
-                        $this->app->redirect("/posts/" . $postId);
-                    }
+                   
                     $post = $this->postRepository->find($postId);
                     if ($post->getAnswerByDoctor() == 0)
                     {
+                        if(!$this->postRepository->acquireLock($postId, $_SESSION['user'])) {
+                            $this->app->flash("info", "The post is now locked by another doctor and therefore cannot be saved");
+                            $this->app->redirect("/posts/" . $postId);
+                        }
                         $post->setAnswerByDoctor(1);
                         $this->postRepository->answeredByDoctor($postId);
 					    $this->userRepository->payMoney($post->getAuthor(), $author_name, 10); 
+                        $this->postRepository->releaseLock($postId, $_SESSION['user']);
                     } else {
                         $this->app->flash("info", "The post was already answered by another doctor and therefore you did not get a payment for your answer");
                         

@@ -133,10 +133,11 @@ class PostRepository
         return ($num == 1);
     }
     public function releaseLock($postId, $doctor) {
-        $sql = "UPDATE posts SET lock_user='', lock_tstamp=0 WHERE post_id=$postId AND (lock_user='' OR lock_user=$doctor OR lock_tstamp<NOW()-1800)";
+
+        $sql = "UPDATE posts SET lock_user='', lock_tstamp=0 WHERE post_id=:postid";
         $stmnt = $this->db->prepare($sql);
+        $stmnt->bindParam(":postid", $postId);
         $stmnt->execute();
-        $num = $stmnt->rowCount();
-        return ($num == 1);
+        return;
     }
 }

@@ -4,7 +4,7 @@
     <h3> {{ flash.msg }}</h3>
     <div id="flasherror">{{ flash.error|nl2br }}</div>
     {% if post %}
-        <h2>{{ post.title}}</h2>
+        <h2>{{ post.title}} {% if post.answerByDoctor == 1 %}<span style="color:#00FF00;">(Answered by doctor)</span>{% endif %}</h2>
         <h3> by {{post.author}}</h3>
         <p> {{ post.content }}</p>
         <lb></lb>
