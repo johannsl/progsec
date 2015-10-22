@@ -77,6 +77,7 @@ class PostRepository
             $row['date'],
             $row['pay'],
             $row['answer_by_doctor']
+            //$row['lock_tstamp']
         );
     }
 
@@ -95,8 +96,8 @@ class PostRepository
         //VULN: SQL-Injection via postId variable (G21_0018)
         // I believe this is fixed
         if ($post->getPostId() === null) {
-            $query = "INSERT INTO posts (title, author, content, date, pay) "
-                . "VALUES (:title, :author, :content, :date, :pay)";
+            $query = "INSERT INTO posts (title, author, content, date, pay, lock_user, lock_tstamp) "
+                . "VALUES (:title, :author, :content, :date, :pay, '', 0)";
             $stmt = $this->db->prepare($query);
 
             $title   = $post->getTitle();
@@ -121,5 +122,21 @@ class PostRepository
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':post_id', $postId);
         return $stmt->execute();
+    }
+    public function acquireLock($postId, $doctor) {
+        $sql = "UPDATE posts SET lock_user=:doctor, lock_tstamp=" . time() . " WHERE post_id=:postid AND (lock_user='' OR lock_user=:doctor OR lock_tstamp<" . (time()-1800) . ")";
+        $stmnt = $this->db->prepare($sql);
+        $stmnt->bindParam(":doctor", $doctor);
+        $stmnt->bindParam(":postid", $postId);
+        $stmnt->execute();
+        $num = $stmnt->rowCount();
+        return ($num == 1);
+    }
+    public function releaseLock($postId, $doctor) {
+        $sql = "UPDATE posts SET lock_user='', lock_tstamp=0 WHERE post_id=$postId AND (lock_user='' OR lock_user=$doctor OR lock_tstamp<NOW()-1800)";
+        $stmnt = $this->db->prepare($sql);
+        $stmnt->execute();
+        $num = $stmnt->rowCount();
+        return ($num == 1);
     }
 }
