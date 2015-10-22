@@ -58,27 +58,30 @@ class UserRepository
     {
         // username should be filtered	
         // I believe this is fixed
-        $query = "SELECT full_name FROM users WHERE user = :username";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':username', $username);
-        $row = false;
-        if (!$stmt->execute()) { //|| $row=$stmt->fetch() ===false) {
-            return false;
-        }
-
+        // $query = "SELECT full_name FROM users WHERE user = :username";
+        // $stmt = $this->pdo->prepare($query);
+        // $stmt->bindParam(':username', $username);
+        // $row = false;
+        // if (!$stmt->execute() || ($row=$stmt->fetch()) === false) {
+        //     return false;
+        // }
+        // 
+        // return $row['full_name']; 
+        //
     }
 
     public function findByUser($username)
-    {
-        $query  = sprintf(self::FIND_BY_NAME, $username);			#username should be filtered
-        $result = $this->pdo->query($query, PDO::FETCH_ASSOC);		
-        $row = $result->fetch();
-        
-        if ($row === false) {
+    {   
+        // username should be filtered
+        // I believe this is fixed
+        $query = "SELECT * FROM users WHERE user = :username";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':username', $username);
+        $row = false;
+        if(!$stmt->execute() || ($row=$stmt->fetch()) === false) {
             return false;
         }
-
-
+ 
         return $this->makeUserFromRow($row);
     }
 
