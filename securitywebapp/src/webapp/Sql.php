@@ -37,19 +37,23 @@ class Sql
         $salt1 = Hash::random_salt();
         $salt2 = Hash::random_salt();
         $salt3 = Hash::random_salt();
+        $salt4 = Hash::random_salt();
 
 
         $hash1 = Hash::make(bin2hex(openssl_random_pseudo_bytes(10)), $salt1);
         $hash2 = Hash::make(bin2hex(openssl_random_pseudo_bytes(10)), $salt2);
         $hash3 = Hash::make(bin2hex(openssl_random_pseudo_bytes(10)), $salt3);
+        $hash4 = Hash::make('Testuser123', $salt4);
 
 		$q1 = "INSERT INTO users(user, pass, salt, is_admin, full_name, address, postcode, bank_acc_num, money_received, money_spent , is_doctor) VALUES ('admin', '$hash1', $salt1,  1, 'admin', 'homebase', '9090', NULL, 0, 0, 0)";
-        $q2 = "INSERT INTO users(user, pass, salt, is_admin, full_name, address, postcode, bank_acc_num, money_received, money_spent , is_doctor) VALUES ('bob', '$hash2', $salt1,  1, 'Robert Green', 'Greenland Grove 9', '2010', NULL, 0, 0, 0)";
-        $q3 = "INSERT INTO users(user, pass, salt, is_admin, full_name, address, postcode, bank_acc_num, money_received, money_spent , is_doctor) VALUES ('bjarni', '$hash3', $salt1,  1, 'Bjarni Torgmund', 'Hummerdale 12', '4120', NULL, 0, 0, 0)";
+        $q2 = "INSERT INTO users(user, pass, salt, is_admin, full_name, address, postcode, bank_acc_num, money_received, money_spent , is_doctor) VALUES ('bob', '$hash2', $salt2,  1, 'Robert Green', 'Greenland Grove 9', '2010', NULL, 0, 0, 0)";
+        $q3 = "INSERT INTO users(user, pass, salt, is_admin, full_name, address, postcode, bank_acc_num, money_received, money_spent , is_doctor) VALUES ('bjarni', '$hash3', $salt3,  1, 'Bjarni Torgmund', 'Hummerdale 12', '4120', NULL, 0, 0, 0)";
+        $q4 = "INSERT INTO users(user, pass, salt, is_admin, full_name, address, postcode, bank_acc_num, money_received, money_spent , is_doctor) VALUES ('testuser', '$hash4', $salt4,  1, 'Teaching Assistant', 'NTNU', '7000', NULL, 0, 0, 0)";
 		
         self::$pdo->exec($q1);
         self::$pdo->exec($q2);
         self::$pdo->exec($q3);
+        self::$pdo->exec($q4);
 
 
         print "[tdt4237] Done inserting dummy users.".PHP_EOL;
