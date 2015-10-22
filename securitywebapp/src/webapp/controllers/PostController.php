@@ -63,6 +63,7 @@ class PostController extends Controller
             $this->render('showpost.twig', [
                 'post' => $post,
                 'comments' => $comments,
+                'user' => $user,
             ]);
         }
 
@@ -82,26 +83,35 @@ class PostController extends Controller
             $request = $this->app->request;
             $validation = new CommentValidation($request->post("text"), $postId, $request->post("csrftoken"));
             if ($validation->isGoodToGo()) {
-                $comment = new Comment($request->post("text"));
-                $comment->setAuthor($_SESSION['user']);
-                $comment->setText($this->app->request->post("text"));
-                $comment->setDate(date("dmY"));
-                $comment->setPost($postId);
-                $this->commentRepository->save($comment);
                 
-                $author_name = $comment->getAuthor();
+                
+                $author_name = $_SESSION['user'];
                 $author = $this->userRepository->findByUser($author_name);
 
                 if ($author->isDoctor() == true)
                 {
+
+                    if(!$this->postRepository->acquireLock($postId, $_SESSION['user'])) {
+                        $this->app->flash("info", "The post is now locked by another doctor and therefore cannot be saved");
+                        $this->app->redirect("/posts/" . $postId);
+                    }
                     $post = $this->postRepository->find($postId);
                     if ($post->getAnswerByDoctor() == 0)
                     {
                         $post->setAnswerByDoctor(1);
                         $this->postRepository->answeredByDoctor($postId);
 					    $this->userRepository->payMoney($post->getAuthor(), $author_name, 10); 
+                    } else {
+                        $this->app->flash("info", "The post was already answered by another doctor and therefore you did not get a payment for your answer");
+                        
                     }
                 }
+                $comment = new Comment($request->post("text"));
+                $comment->setAuthor($_SESSION['user']);
+                $comment->setText($this->app->request->post("text"));
+                $comment->setDate(date("dmY"));
+                $comment->setPost($postId);
+                $this->commentRepository->save($comment);
 
                 $this->app->redirect('/posts/' . $postId); 
             } else {
